@@ -100,7 +100,7 @@
                 </if>
             </trim>
         </where>
-        order by year,course_id desc
+        order by year desc,course_id asc
     </select>
 
     <select id="list" parameterType="com.pzhu.iacaa2_0.entity.CourseTask" resultMap="BaseResultMap">

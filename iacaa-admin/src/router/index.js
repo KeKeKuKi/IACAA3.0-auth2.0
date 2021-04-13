@@ -48,6 +48,7 @@ export const constantRoutes = [
   {
     path: '/Questionnaire',
     component: () => import('@/views/questionnaire/CourseTaskQuestionnaire'),
+    meta:{requireAuth:false},
     hidden: true
   },
 ]

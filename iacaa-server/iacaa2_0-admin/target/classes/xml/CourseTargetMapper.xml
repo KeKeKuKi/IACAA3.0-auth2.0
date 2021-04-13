@@ -38,7 +38,11 @@
                 </if>
             </trim>
         </where>
-        order by course_id
+        order by course_id asc
     </select>
+
+    <delete id="removeByTargetId" parameterType="java.lang.Long">
+        delete from t_course_target where target_id = #{id}
+    </delete>
 
 </mapper>

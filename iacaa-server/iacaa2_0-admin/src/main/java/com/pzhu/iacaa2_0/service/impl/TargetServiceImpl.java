@@ -5,6 +5,7 @@ import com.pzhu.iacaa2_0.entity.CourseTarget;
 import com.pzhu.iacaa2_0.entity.Target;
 import com.pzhu.iacaa2_0.entityVo.TargetVo;
 import com.pzhu.iacaa2_0.mapper.TargetMapper;
+import com.pzhu.iacaa2_0.service.ICourseTargetService;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.pzhu.iacaa2_0.service.ITargetService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -28,6 +29,9 @@ public class TargetServiceImpl extends ServiceImpl<TargetMapper, Target> impleme
     @Autowired
     ICourseTaskService courseTaskService;
 
+    @Autowired
+    ICourseTargetService courseTargetService;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Boolean summaryThisYearTargetsGrade() {
@@ -50,4 +54,17 @@ public class TargetServiceImpl extends ServiceImpl<TargetMapper, Target> impleme
     public List<Target> list(TargetVo vo) {
         return baseMapper.list(vo);
     }
+
+    @Transactional
+    @Override
+    public Boolean removeByReqId(Long id) {
+        List<Target> byReqId = baseMapper.getByReqId(id);
+        final boolean[] b = {true};
+        byReqId.forEach(target -> {
+            b[0] = b[0] && courseTargetService.removeByTargetId(target.getId());
+        });
+
+        return b[0] && baseMapper.removeByReqId(id) >=0;
+    }
+
 }

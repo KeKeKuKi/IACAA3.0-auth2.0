@@ -138,7 +138,7 @@ export default {
           data: names,
           axisLabel: {
             interval: 0,
-            rotate: 50
+            rotate: 90
           }
         },
         yAxis: {
@@ -149,9 +149,10 @@ export default {
           name: '系统成绩',
           data: sysGrades,
           type: 'bar',
+          barGap: 0,
           itemStyle: {
             normal: {
-              color: '#47059a'
+              color: '#c9084c'
             }
           },
           showBackground: true,
@@ -174,7 +175,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#23004c'
+              color: '#1f3cf1'
             }
           },
           showBackground: true,
@@ -255,11 +256,15 @@ export default {
         '#9a5a2b',
       ]
       let tasksName = courseTasks.map(i => {
-        return i.course.name + ':' + i.describes
+        return i.course.name + ':' + i.id + i.describes
       })
 
       let tasksScores = courseTasks.map(i => {
-        return i.sysGrade * 100
+        return (i.sysGrade * 100).toFixed(2)
+      })
+
+      let stuScores = courseTasks.map(i => {
+        return (i.stuGrade * 100).toFixed(2)
       })
 
       option = {
@@ -297,20 +302,34 @@ export default {
           type: 'value',
           max: 100
         },
-        series: {
-          name: '成绩',
+        series: [{
+          name: '系统成绩',
           data: tasksScores,
           type: 'bar',
+          barGap: 0,
           itemStyle: {
             normal: {
-              color: '#5e128d'
+              color: '#b60092'
             }
           },
           showBackground: true,
           backgroundStyle: {
             color: 'rgba(180,180,180,0.2)'
           }
-        }
+        },{
+          name: '学生评价',
+          data: stuScores,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#0551bf'
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          }
+        }]
       }
       option && myChart.setOption(option)
     },
@@ -324,14 +343,14 @@ export default {
       for (let courseTarget of courseTargets) {
         dtataNames.push(courseTarget.course.name)
         chartData.push({
-          value: courseTarget.mix,
+          value: courseTarget.mix.toFixed(2),
           name: courseTarget.course.name
         })
       }
       let courseTasks = this.targetChartForm.courseTasks
       let tasksDta = new Array(courseTasks.length)
       for (let courseTask of courseTasks) {
-        dtataNames.push(courseTask.describes)
+        dtataNames.push(courseTask.id + courseTask.describes)
         let courseTaskMix = 0
         for (let courseTarget of courseTargets) {
           if (courseTask.course.id === courseTarget.course.id) {
@@ -339,8 +358,8 @@ export default {
           }
         }
         tasksDta.push({
-          value: courseTaskMix,
-          name: courseTask.describes
+          value: courseTaskMix.toFixed(2),
+          name: courseTask.id + courseTask.describes
         })
       }
       option = {

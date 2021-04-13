@@ -262,38 +262,55 @@ export default {
       this.addForm.name = ''
     },
     handleDelete() {
-      this.loading = true
-      requestByClient(supplierConsumer, 'POST','gradRequirement/del', {
-        ids: this.ids }
-      , res => {
-        if (res.data.succ) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
+      this.$confirm('此操作将删除其支撑数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        requestByClient(supplierConsumer, 'POST','gradRequirement/deleteList', {
+            ids: this.ids }
+          , res => {
+            if (res.data.succ) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.getList()
+            }
           })
-          this.getList()
-        }
-        this.loading = false
-      })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     handleAddTarget() {
       this.editForm.targets.push({ discribe: '', reqId: this.editForm.id })
     },
     deleteDiscribe(index) {
       let target = this.editForm.targets[index]
-
       if(target.id){
-        let id = target.id
-        requestByClient(supplierConsumer, 'POST','target/deleteOne', {id: id},res => {
-          if (res.data.succ) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-          }
-        })
+        this.$confirm('此操作将删除其支撑数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let id = target.id
+          requestByClient(supplierConsumer, 'POST','target/deleteOne', {id: id},res => {
+            if (res.data.succ) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            }
+          })
+          this.editForm.targets.splice(index, 1)
+        }).catch(() => {
+        });
+      }else {
+        this.editForm.targets.splice(index, 1)
       }
-      this.editForm.targets.splice(index, 1)
     },
     exportTemplate() {
       requestByClient(supplierConsumer, 'POST','gradRequirement/exportTemplate', {

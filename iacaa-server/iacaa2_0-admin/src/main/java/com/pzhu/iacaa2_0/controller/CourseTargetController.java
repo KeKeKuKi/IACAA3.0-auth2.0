@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -58,8 +55,16 @@ public class CourseTargetController {
 
     @RequestMapping("/voList")
     @AuthResource(scope = "voList", name = "课程-指标点Vo列表")
-    public ActionResult voList(@RequestBody CourseTarget courseTarget){
-        List<CourseTargetVo> volist = courseTargetService.volist(courseTarget);
+    public ActionResult voList(@RequestBody CourseTargetVo vo){
+        List<CourseTargetVo> volist = courseTargetService.volist(vo);
+        return ActionResult.ofSuccess(volist);
+    }
+
+    @RequestMapping("/thisYearvoList")
+    @AuthResource(scope = "thisYearvoList", name = "本年度课程-指标点Vo列表")
+    public ActionResult thisYearvoList(@RequestBody CourseTargetVo vo){
+        List<CourseTargetVo> volist = courseTargetService.volist(vo);
+        volist.removeIf(next -> next.getTarget().getYear() != LocalDateTime.now().getYear());
         return ActionResult.ofSuccess(volist);
     }
 

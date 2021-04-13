@@ -10,6 +10,7 @@ import com.pzhu.iacaa2_0.entityVo.GradRequirementVo;
 import com.pzhu.iacaa2_0.entityVo.IdsVo;
 import com.pzhu.iacaa2_0.entityVo.TargetVo;
 import com.pzhu.iacaa2_0.service.*;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -135,7 +137,7 @@ public class GradRequirementController{
     @RequestMapping("/deleteList")
     @AuthResource(scope = "deleteList", name = "删除毕业要求列表")
     public ActionResult deleteList(@RequestBody IdsVo ids) {
-        boolean b = gradRequirementService.removeByIds(ids.getIds());
+        boolean b = gradRequirementService.removeList(ids.getIds());
         return b ? ActionResult.ofSuccess() : ActionResult.ofFail("删除失败");
     }
 
@@ -179,7 +181,7 @@ public class GradRequirementController{
     }
 
     @RequestMapping("/randData")
-    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
+//    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
     public void randData() {
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
@@ -265,7 +267,7 @@ public class GradRequirementController{
                 checkLink.setUpdateDate(LocalDateTime.now());
                 checkLink.setTargetScore(100D);
                 checkLink.setName(getString().substring(0,5));
-                checkLink.setAverageScore((int)Math.random()*50 + 50d);
+                checkLink.setAverageScore((int)(Math.random()*50) + 50d);
                 checkLink.setTaskId(courseTask.getId().intValue());
                 if(allMix - mix > 0.1){
                     checkLink.setMix(mix);

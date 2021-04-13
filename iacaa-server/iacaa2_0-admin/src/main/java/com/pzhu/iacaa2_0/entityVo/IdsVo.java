@@ -9,5 +9,5 @@ import java.util.List;
  */
 @Data
 public class IdsVo {
-    private List<String> ids;
+    private List<Long> ids;
 }

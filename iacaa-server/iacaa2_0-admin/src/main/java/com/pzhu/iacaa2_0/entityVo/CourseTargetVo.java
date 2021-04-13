@@ -6,7 +6,7 @@ import com.pzhu.iacaa2_0.entity.Target;
 import lombok.Data;
 
 @Data
-public class CourseTargetVo {
+public class CourseTargetVo extends CourseTarget{
     Long id;
     Course course;
     Target target;

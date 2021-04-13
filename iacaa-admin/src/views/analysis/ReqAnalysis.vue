@@ -127,6 +127,7 @@ export default {
           name: '系统成绩',
           data: sysScores,
           type: 'bar',
+          barGap: 0,
           itemStyle: {
             normal: {
               color: '#1d5fac'
@@ -248,9 +249,10 @@ export default {
           name: '系统成绩',
           data: sysScores,
           type: 'bar',
+          barGap: 0,
           itemStyle: {
             normal: {
-              color: '#843cd5'
+              color: '#b80048'
             }
           },
           showBackground: true,
@@ -273,7 +275,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#3c116c'
+              color: '#3003ac'
             }
           },
           showBackground: true,

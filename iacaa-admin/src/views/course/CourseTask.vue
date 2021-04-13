@@ -212,7 +212,7 @@ export default {
             this.editForm.courseTasks = res.data.data
         }
       })
-      requestByClient(supplierConsumer, 'POST','courseTarget/voList',{
+      requestByClient(supplierConsumer, 'POST','courseTarget/thisYearvoList',{
         courseId: row.id
       },res => {
         if (res.data.succ) {
@@ -236,21 +236,31 @@ export default {
     deleteDiscribe(index){
       var courseTask = this.editForm.courseTasks[index]
       if(courseTask.id){
-        requestByClient(supplierConsumer, 'POST','courseTask/delete', {
-          id: courseTask.id
-        },res => {
-          if (res.data.succ) {
-            this.$message({
-              message: '已删除',
-              type: 'success'
-            });
-          }else {
-            this.$message.error(res.data.msg);
-          }
-          this.loading = false
-        })
+        this.$confirm('此操作将删除其支撑数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          requestByClient(supplierConsumer, 'POST','courseTask/delete', {
+            id: courseTask.id
+          },res => {
+            if (res.data.succ) {
+              this.$message({
+                message: '已删除',
+                type: 'success'
+              });
+            }else {
+              this.$message.error(res.data.msg);
+            }
+            this.loading = false
+          })
+          this.editForm.courseTasks.splice(index,1)
+        }).catch(() => {
+        });
+      }else {
+        this.editForm.courseTasks.splice(index,1)
       }
-      this.editForm.courseTasks.splice(index,1)
+
     },
   }
 }

@@ -10,6 +10,8 @@ import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.Target;
 import com.pzhu.iacaa2_0.entityVo.IdsVo;
 import com.pzhu.iacaa2_0.entityVo.TargetVo;
+import com.pzhu.iacaa2_0.service.ICourseTargetService;
+import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.pzhu.iacaa2_0.service.ITargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -35,6 +37,9 @@ import java.util.List;
 public class TargetController {
     @Autowired
     ITargetService targetService;
+
+    @Autowired
+    ICourseTargetService courseTargetService;
 
     @RequestMapping("/pageList")
     @AuthResource(scope = "pageList", name = "指标点分页列表")
@@ -93,7 +98,7 @@ public class TargetController {
     @RequestMapping("/del")
     @AuthResource(scope = "del", name = "删除多个指标点")
     public ActionResult del(@RequestBody IdsVo ids){
-        for (String id : ids.getIds()) {
+        for (Long id : ids.getIds()) {
             targetService.removeById(id);
         }
         return ActionResult.ofSuccess();
@@ -102,8 +107,10 @@ public class TargetController {
     @RequestMapping("/deleteOne")
     @AuthResource(scope = "deleteOne", name = "删除单个指标点")
     public ActionResult deleteOne(@RequestBody Target target){
-        boolean b = targetService.removeById(target.getId());
-        return b ? ActionResult.ofSuccess() : ActionResult.ofFail("删除失败");
+        return courseTargetService.removeByTargetId(target.getId())
+                && targetService.removeById(target.getId())
+                ? ActionResult.ofSuccess()
+                : ActionResult.ofFail("删除失败");
     }
 
     @RequestMapping("/summaryAll")

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getToken } from '@/utils/auth'
 import { Message } from 'element-ui'
+import router from '@/router'
 
 const devServer = 'http://127.0.0.1:19999/'
 // const devServer = 'http://dev.51ishare.com:8182/'
@@ -28,8 +29,9 @@ export const Auth = axios.create({
 
 //业务系统响应全局拦截器
 supplierConsumer.interceptors.response.use(response => {
-  if(response.data.code === 10513){
+  if(response.data.code === 403){
     Message.error("Token已过期，或没有权限这样做，可以尝试重新登陆或联系管理员开通权限")
+    router.push('/login')
   }else if(!response.data.succ){
     Message.error(response.data.msg)
   }else {

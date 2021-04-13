@@ -15,5 +15,7 @@ import java.util.List;
  * @since 2021-01-15
  */
 public interface CourseTargetMapper extends BaseMapper<CourseTarget> {
-    List<CourseTargetVo> volist(CourseTarget courseTarget);
+    List<CourseTargetVo> volist(CourseTargetVo vo);
+
+    Integer removeByTargetId(Long id);
 }

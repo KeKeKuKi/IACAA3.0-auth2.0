@@ -20,4 +20,7 @@ public interface ITargetService extends IService<Target> {
     Boolean summaryThisYearTargetsGrade();
 
     List<Target> list(TargetVo vo);
+
+    Boolean removeByReqId(Long id);
+
 }

@@ -8,15 +8,14 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect','/Questionnaire'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
-
+  console.log(to.path)
   // set page title
   document.title = getPageTitle(to.meta.title)
-
   // determine whether the user has logged in
   const hasToken = getToken()
   if (hasToken) {
@@ -54,10 +53,6 @@ router.beforeEach(async(to, from, next) => {
       }
     }
   } else {
-    /* has no token*/
-
-    if (to.path === '/Questionnaire'){
-    }
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

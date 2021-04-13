@@ -162,7 +162,8 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ path: '/Main'})
+              this.$router.go(0)
               this.loading = false
               this.$emit('already_login')
             })
@@ -172,7 +173,6 @@ export default {
             })
           return true
         } else {
-          console.log('提交错误!!')
           return false
         }
       })

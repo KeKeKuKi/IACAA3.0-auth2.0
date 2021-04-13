@@ -101,7 +101,7 @@
           </el-table>
             <!--eslint-disable-next-line-->
             <span v-for="(item,index) in ckeckLinkEditForm.checkLinks" type="text" autocomplete="off">
-              <el-select v-model="item.name" placeholder="标题" disabled filterable style="width: 50%;margin-top: 10px">
+              <el-select v-model="item.name" placeholder="标题" disabled filterable style="width: 45%;margin-top: 10px">
                 <el-option label="期末考试" value="期末考试" />
                 <el-option label="期中考试" value="期中考试" />
                 <el-option label="日常作业" value="日常作业" />

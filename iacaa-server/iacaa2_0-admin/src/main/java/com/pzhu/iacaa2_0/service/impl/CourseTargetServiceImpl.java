@@ -21,7 +21,12 @@ import java.util.List;
 public class CourseTargetServiceImpl extends ServiceImpl<CourseTargetMapper, CourseTarget> implements ICourseTargetService {
 
     @Override
-    public List<CourseTargetVo> volist(CourseTarget courseTarget) {
-        return baseMapper.volist(courseTarget);
+    public List<CourseTargetVo> volist(CourseTargetVo vo) {
+        return baseMapper.volist(vo);
+    }
+
+    @Override
+    public Boolean removeByTargetId(Long id) {
+        return baseMapper.removeByTargetId(id) >= 0;
     }
 }

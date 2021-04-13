@@ -15,6 +15,7 @@ import java.util.List;
  * @since 2021-01-15
  */
 public interface ICourseTargetService extends IService<CourseTarget> {
-    List<CourseTargetVo> volist(CourseTarget courseTarget);
+    List<CourseTargetVo> volist(CourseTargetVo vo);
 
+    Boolean removeByTargetId(Long id);
 }

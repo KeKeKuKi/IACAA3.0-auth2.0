@@ -88,7 +88,7 @@ public class CourseController{
     @RequestMapping("/del")
     @AuthResource(scope = "del", name = "删除单个课程")
     public ActionResult del(@RequestBody IdsVo ids){
-        for (String id : ids.getIds()) {
+        for (Long id : ids.getIds()) {
             courseService.removeById(id);
         }
         return ActionResult.ofSuccess();

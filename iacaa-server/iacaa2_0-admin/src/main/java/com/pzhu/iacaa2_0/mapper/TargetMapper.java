@@ -15,9 +15,11 @@ import java.util.List;
  * @since 2021-01-15
  */
 public interface TargetMapper extends BaseMapper<Target> {
-    List<Target> getByReqId(String id);
+    List<Target> getByReqId(Long id);
 
     Integer summaryByTargetId(Long id);
 
     List<Target> list(TargetVo vo);
+
+    Integer removeByReqId(Long id);
 }

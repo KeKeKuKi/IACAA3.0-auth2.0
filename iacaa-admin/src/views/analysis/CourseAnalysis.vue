@@ -166,7 +166,7 @@ export default {
           data: names,
           axisLabel: {
             interval: 0,
-            rotate: 50
+            rotate: 90
           }
         },
         yAxis: {
@@ -176,10 +176,11 @@ export default {
         series: [{
           name: '系统成绩',
           data: sysScores,
+          barGap: 0,
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#47059a'
+              color: '#b8004c'
             }
           },
           showBackground: true,
@@ -202,7 +203,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#23004c'
+              color: '#002892'
             }
           },
           showBackground: true,
@@ -327,11 +328,12 @@ export default {
           },
           yAxis: {
             type: 'value',
-            boundaryGap: [0, 0.01]
+            boundaryGap: [0, 0.01],
+            max: 100
           },
           xAxis: {
             type: 'category',
-            data: nams
+            data: nams,
           },
           series: [
             {
