@@ -23,6 +23,7 @@ import com.gapache.user.server.service.UserCustomizeInfoService;
 import com.gapache.user.server.service.UserService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -217,6 +218,19 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(this::entity2Vo)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserVO> list(UserVO userVO) {
+        List<UserEntity> all = userRepository.findAll();
+        List<UserVO> userVOS = new ArrayList<>();
+        all.forEach(i -> {
+            UserVO newUserVo = new UserVO();
+            BeanUtils.copyProperties(i,newUserVo);
+            newUserVo.setPassword("加密不可见");
+            userVOS.add(newUserVo);
+        });
+        return userVOS;
     }
 
     private void getCustomerInfo(String clientId, UserEntity userEntity, UserVO vo) {

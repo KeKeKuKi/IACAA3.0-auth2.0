@@ -33,11 +33,6 @@
         <template slot-scope="courseScope">
           <el-table :data="courseScope.row.courseTasks" stripe>
             <el-table-column
-              prop="id"
-              label="ID"
-              width="200"
-            />
-            <el-table-column
               prop="year"
               label="年份"
               width="200"

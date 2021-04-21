@@ -33,11 +33,6 @@
         <template slot-scope="courseScope">
           <el-table :data="courseScope.row.courseTasks" stripe>
             <el-table-column
-              prop="id"
-              label="ID"
-              width="200"
-            />
-            <el-table-column
               prop="year"
               label="年份"
               width="200"
@@ -94,17 +89,12 @@
             <el-table-column
               prop=""
               label="考核环节"
-              width="250">
-            </el-table-column>
-              <el-table-column
-                prop=""
-                label="年份"
-                width="100">
+              width="230">
             </el-table-column>
             <el-table-column
               prop=""
-              label="环节总分"
-              width="90">
+              label="目标总分"
+              width="110">
             </el-table-column>
             <el-table-column
               prop=""

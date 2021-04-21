@@ -283,10 +283,10 @@ public class GradRequirementController{
     }
 
     private String getString(){
-        int count = (int)((Math.random())/1 * 30 + 12);
+        int count = (int)((Math.random()) * 30 + 12);
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            stringBuilder.append((char)((int)((Math.random())/1 * (40869 - 19968) + 19968)));
+            stringBuilder.append((char)((int)((Math.random()) * (40869 - 19968) + 19968)));
         }
         return stringBuilder.toString();
     }

@@ -470,7 +470,7 @@ export default {
               this.user.id = respJson.data.id
               this.user.username = respJson.data.username
               this.user.introduction = respJson.data.introduction
-              this.user.email = respJson.data.email
+              // this.user.email = respJson.data.email
               this.user.isEnabled = respJson.data.isEnabled
               this.user.customizeInfo = JSON.parse(respJson.data.customizeInfo)
               this.user.roleId = resp.data.data

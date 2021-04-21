@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       title: 'IACAA2.0',
-      logo: 'https://www.logosc.cn/img/logo-icons/logosc.svg'
+      logo: 'https://images6211.oss-cn-beijing.aliyuncs.com/logo.png?Expires=1618969778&OSSAccessKeyId=TMP.3KeuPh61zC9vyXjXgeCFmjfyUkLb3yKViKvvYN4XAsrQiiJmAbCz1AguXKxuiu7j67nJhN27GuG1ys9ZZzrhEqC4FdRTHH&Signature=In0YJvNc0HNxedXIkiuUMix897E%3D'
     }
   }
 }

@@ -77,6 +77,13 @@ public class UserController {
         return JsonResult.of(pageResult);
     }
 
+    @PostMapping("/list")
+    @AuthResource(scope = "list", name = "查询教师用户")
+    public JsonResult<List<UserVO>> list(@RequestBody UserVO userVO) {
+        List<UserVO> userVOS = userService.list(userVO);
+        return JsonResult.of(userVOS);
+    }
+
     @PostMapping("/saveUserRelation")
     @AuthResource(scope = "saveUserRelation", name = "保存用户所属关系")
     public JsonResult<Boolean> saveUserRelation(@RequestBody SaveUserRelationVO vo) {

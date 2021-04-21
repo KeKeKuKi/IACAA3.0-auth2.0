@@ -30,4 +30,6 @@ public interface UserService {
     Boolean saveUserRelation(SaveUserRelationVO vo);
 
     List<UserVO> findAllByIdIn(List<Long> userIds);
+
+    List<UserVO> list(UserVO userVO);
 }

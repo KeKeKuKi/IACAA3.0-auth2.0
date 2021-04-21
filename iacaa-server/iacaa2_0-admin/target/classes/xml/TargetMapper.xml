@@ -19,7 +19,7 @@
         id, discribe, req_id, year, sys_grade, stu_grade, created_date, update_date
     </sql>
 
-    <select id="getByReqId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="getByReqId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select *
         from t_target
         where req_id = #{id}
@@ -78,4 +78,7 @@
         WHERE id in (select distinct(target_id) from t_course_task) and id = #{id}
     </update>
 
+    <delete id="removeByReqId" parameterType="java.lang.Long">
+        delete from t_target where req_id = #{id}
+    </delete>
 </mapper>

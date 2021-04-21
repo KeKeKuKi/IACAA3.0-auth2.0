@@ -3,6 +3,7 @@ package com.pzhu.iacaa2_0.controller;
 
 import com.gapache.security.annotation.AuthResource;
 import com.gapache.security.annotation.NeedAuth;
+import com.gapache.security.holder.AccessCardHolder;
 import com.github.pagehelper.PageInfo;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.Course;
@@ -44,8 +45,17 @@ public class CourseController{
     @RequestMapping("/voList")
     @AuthResource(scope = "voList", name = "课程Vo列表")
     public ActionResult list(@RequestBody CourseVo vo) throws Exception{
-//        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+        Long userId = AccessCardHolder.getContext().getUserId();
+        vo.setEditUserId(userId.intValue());
         List<CourseVo> list = courseService.voList(vo);
+        PageInfo page = new PageInfo(list);
+        return ActionResult.ofSuccess(page);
+    }
+
+    @RequestMapping("/adminList")
+    @AuthResource(scope = "adminList", name = "admin课程列表")
+    public ActionResult adminList(@RequestBody CourseVo vo) throws Exception{
+        List<Course> list = courseService.list();
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);
     }

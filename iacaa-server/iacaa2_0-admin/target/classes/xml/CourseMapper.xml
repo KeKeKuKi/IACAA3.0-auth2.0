@@ -40,6 +40,9 @@
                 <if test="word != null and word !=''">
                     AND (a.name like CONCAT(CONCAT('%',#{word}),'%'))
                 </if>
+                <if test="editUserId != null and editUserId !=''">
+                    AND edit_user_id = #{editUserId}
+                </if>
             </trim>
         </where>
         ORDER by id

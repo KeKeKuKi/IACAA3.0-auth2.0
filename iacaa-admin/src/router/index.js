@@ -100,13 +100,13 @@ export const asyncRoutes = [
     path: '/GradRequirementEdit',
     component: Layout,
     redirect: '/GradRequirementEdit',
-    meta: { title: '毕业要求', icon: 'education', affix: true, roles: ['adminExclusive', 'Iacaa20Server:Menue:GradRequirement']},
+    meta: { title: '毕业要求及指标点管理', icon: 'education', affix: true, roles: ['adminExclusive', 'Iacaa20Server:Menue:GradRequirement']},
     children: [
       {
         path: 'GradRequirementEdit',
         component: () => import('@/views/gradRequirement/GradRequirementEdit'),
         name: 'GradRequirementEdit',
-        meta: { title: '毕业要求', icon: 'education', affix: true }
+        meta: { title: '毕业要求及指标点管理', icon: 'education', affix: true }
       }
     ]
   },
@@ -114,13 +114,13 @@ export const asyncRoutes = [
     path: '/Target',
     component: Layout,
     redirect: '/Target',
-    meta: { title: '指标点', icon: 'education', affix: true, roles: ['adminExclusive', 'Iacaa20Server:Menue:Target']},
+    meta: { title: '指标点关联课程', icon: 'education', affix: true, roles: ['adminExclusive', 'Iacaa20Server:Menue:Target']},
     children: [
       {
         path: 'Target',
         component: () => import('@/views/target/Target'),
         name: 'Target',
-        meta: { title: '指标点', icon: 'star', affix: true }
+        meta: { title: '指标点关联课程', icon: 'star', affix: true }
       }
     ]
   },
@@ -148,13 +148,13 @@ export const asyncRoutes = [
         path: 'CourseTask',
         component: () => import('@/views/course/CourseTask'),
         name: 'CourseTask',
-        meta: { title: '课程目标', icon: 'edit', affix: true }
+        meta: { title: '课程目标关联指标点', icon: 'edit', affix: true }
       },
       {
         path: 'CheckLinks',
         component: () => import('@/views/course/CheckLinks'),
         name: 'CheckLinks',
-        meta: { title: '考核环节', icon: 'edit', affix: true }
+        meta: { title: '考核环节关联目标', icon: 'edit', affix: true }
       }
     ]
   },
@@ -168,7 +168,7 @@ export const asyncRoutes = [
         path: 'CheckLinkScore',
         component: () => import('@/views/score/CheckLinkScore'),
         name: 'CheckLinkScore',
-        meta: { title: '编辑成绩', icon: 'list', affix: true }
+        meta: { title: '录入直接评价数据', icon: 'list', affix: true }
       }
     ]
   },

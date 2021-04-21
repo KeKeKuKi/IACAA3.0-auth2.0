@@ -41,7 +41,12 @@
       <el-table-column
         prop="editUserId"
         label="课程管理员"
-        width="150">
+        width="350">
+        <template slot-scope="scope">
+          <el-select v-model="scope.row.editUserId" @change="changeCourseEditer(scope.row)" placeholder="选择管理员" clearable filterable style="width: 60%;margin-top: 10px">
+            <el-option v-for="(item1,index1) in teachers" :key="index1" :label="item1.username" :value="item1.id" />
+          </el-select>
+        </template>
       </el-table-column>
       <el-table-column label="课程可编辑">
         <template slot-scope="scope">
@@ -79,6 +84,7 @@ export default {
   name: "Course",
   mounted() {
     this.getList()
+    this.getTeachers()
   },
   data() {
     return {
@@ -90,9 +96,28 @@ export default {
       serchForm: {
         word: ''
       },
-      ids:[]
+      ids:[],
+      teachers: []
     }
   },methods: {
+    changeCourseEditer(course){
+      requestByClient(supplierConsumer, 'POST', 'course/update', course, res => {
+        if (res.data.succ){
+          this.$message({
+            message: '已保存修改',
+            type: 'success'
+          });
+        }
+      })
+    },
+    getTeachers(){
+      requestByClient(User, 'POST', 'api/user/list', {
+      }, res => {
+        if (res.data.code === 0){
+          this.teachers = res.data.data
+        }
+      })
+    },
     changeEditStatus(id) {
       requestByClient(supplierConsumer, 'POST', 'course/changeEditStatus', {
         id: id
@@ -107,7 +132,7 @@ export default {
     },
     getList() {
       this.loading = true
-      requestByClient(supplierConsumer, 'POST', 'course/voList', {
+      requestByClient(supplierConsumer, 'POST', 'course/adminList', {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         word: this.serchForm.word

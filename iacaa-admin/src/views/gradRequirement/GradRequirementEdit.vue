@@ -55,7 +55,7 @@
       />
       <el-table-column
         prop="name"
-        label="名称"
+        label="毕业要求"
         width="200"
       />
       <el-table-column
