@@ -5,20 +5,17 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.pzhu.iacaa2_0.entity.CheckLink">
         <result column="id" property="id"/>
-        <result column="task_id" property="taskId"/>
+        <result column="course_id" property="courseId"/>
         <result column="name" property="name"/>
         <result column="target_score" property="targetScore"/>
         <result column="average_score" property="averageScore"/>
-        <result column="mix" property="mix"/>
         <result column="created_date" property="createdDate"/>
         <result column="update_date" property="updateDate"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id
-        ,
-        task_id, name, target_score, average_score, mix, created_date, update_date
+        id, course_id, name, target_score, average_score, created_date, update_date
     </sql>
 
     <select id="list" parameterType="com.pzhu.iacaa2_0.entityVo.CheckLinkVo" resultMap="BaseResultMap">
@@ -30,8 +27,8 @@
                 <if test="id != null and id !=''">
                     AND a.id = #{id}
                 </if>
-                <if test="taskId != null and taskId !=''">
-                    AND a.task_id = #{taskId}
+                <if test="courseId != null and courseId !=''">
+                    AND a.course_id = #{courseId}
                 </if>
                 <if test="word != null and word !=''">
                     AND (a.name like CONCAT(CONCAT('%',#{word}),'%'))

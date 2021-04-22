@@ -56,7 +56,7 @@
               prop="courseTasks">
               <template slot-scope="courseTaskScope">
                 <el-button :disabled="courseScope.row.editStatus === 0" v-if="courseTaskScope.row.year === new Date().getFullYear()"
-                           type="primary" icon="el-icon-edit" circle @click="handleCheckLinkEditForm(courseScope.row.name, courseTaskScope.row)" />
+                           type="primary" icon="el-icon-edit" circle @click="handleCheckLinkEditForm(courseScope.row, courseTaskScope.row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -93,24 +93,14 @@
             </el-table-column>
             <el-table-column
               prop=""
-              label="目标总分"
-              width="110">
-            </el-table-column>
-            <el-table-column
-              prop=""
               label="权重系数">
             </el-table-column>
           </el-table>
             <!--eslint-disable-next-line-->
-            <span v-for="(item,index) in ckeckLinkEditForm.checkLinks" type="text" autocomplete="off">
-              <el-select v-model="item.name" placeholder="标题" clearable filterable style="width: 45%;margin-top: 10px">
-                <el-option label="期末考试" value="期末考试" />
-                <el-option label="期中考试" value="期中考试" />
-                <el-option label="日常作业" value="日常作业" />
-                <el-option label="课堂表现" value="课堂表现" />
-                <el-option label="日常考勤" value="日常考勤" />
+            <span v-for="(item,index) in ckeckLinkEditForm.courseTaskCheckLinks" type="text" autocomplete="off">
+              <el-select v-model="item.checkLinkId" placeholder="考核环节" clearable filterable style="width: 45%;margin-top: 10px">
+                <el-option v-for="(item1,index1) in ckeckLinkEditForm.ableCheckLinks" :label="item1.name" :value="item1.id" />
               </el-select>
-              <el-input v-model="item.targetScore"  label="目标分数" style="width: 12%;margin-top: 10px" />
               <el-input-number v-model="item.mix" :min="0.1" :max="1" step="0.1" label="权重系数" style="width: 30%;margin-top: 10px" />
               <el-button type="danger" icon="el-icon-delete" circle @click="deleteDiscribe(index)" style="margin-left: 10px"/>
             </span>
@@ -155,7 +145,8 @@ export default {
       ckeckLinkEditForm: {
         courseName: '',
         courseTask: {},
-        checkLinks: []
+        ableCheckLinks: [],
+        courseTaskCheckLinks: []
       }
     }
   },
@@ -177,17 +168,23 @@ export default {
         }
       })
     },
-    handleCheckLinkEditForm(courseName, courseTask) {
-      this.dialogVisible = true
+    handleCheckLinkEditForm(course, courseTask) {
       this.ckeckLinkEditForm.courseTask = courseTask
-      this.ckeckLinkEditForm.courseName = courseName
+      this.ckeckLinkEditForm.courseName = course.name
       requestByClient(supplierConsumer, 'POST', 'checkLink/list', {
-        taskId: courseTask.id
+        courseId: course.id
       }, res => {
         if (res.data.succ) {
-          this.ckeckLinkEditForm.checkLinks = res.data.data
+          this.ckeckLinkEditForm.ableCheckLinks = res.data.data
         }
-        this.loading = false
+      })
+      requestByClient(supplierConsumer, 'POST', 'courseTaskCheckLink/voList', {
+        courseTaskId: courseTask.id
+      }, res => {
+        if (res.data.succ) {
+          this.ckeckLinkEditForm.courseTaskCheckLinks = res.data.data
+          this.dialogVisible = true
+        }
       })
     },
     handleSizeChange(val) {
@@ -200,9 +197,9 @@ export default {
       this.getCourseList()
     },
     deleteDiscribe(index){
-      var check = this.ckeckLinkEditForm.checkLinks[index]
+      var check = this.ckeckLinkEditForm.courseTaskCheckLinks[index]
       if(check.id){
-        requestByClient(supplierConsumer, 'POST','checkLink/delete', {
+        requestByClient(supplierConsumer, 'POST','courseTaskCheckLink/delete', {
           id: check.id
         },res => {
           if (res.data.succ) {
@@ -213,18 +210,17 @@ export default {
           }else {
             this.$message.error(res.data.msg);
           }
-          this.loading = false
         })
       }
-      this.ckeckLinkEditForm.checkLinks.splice(index,1)
+      this.ckeckLinkEditForm.courseTaskCheckLinks.splice(index,1)
     },
     handleAddCheckLink(){
-      this.ckeckLinkEditForm.checkLinks.push({name:'',mix: '',targetScore: '',taskId: this.ckeckLinkEditForm.courseTask.id})
+      this.ckeckLinkEditForm.courseTaskCheckLinks.push({checkLinkId:'',mix: '',courseTaskId: this.ckeckLinkEditForm.courseTask.id})
     },
     submitCheckLinksForm(){
-      let checkLinks = this.ckeckLinkEditForm.checkLinks
+      let checkLinks = this.ckeckLinkEditForm.courseTaskCheckLinks
       for (let checkLink of checkLinks) {
-        if(checkLink.name === ''){
+        if(checkLink.checkLinkId === ''){
           this.$message({
             message: '考核环节不能为空',
             type: 'error'
@@ -238,17 +234,9 @@ export default {
           });
           return false
         }
-        if(checkLink.targetScore === '' || checkLink.targetScore < 0){
-          this.$message({
-            message: '目标分数不能为空且大于零',
-            type: 'error'
-          });
-          return false
-        }
       }
-
       this.loading = true
-      requestByClient(supplierConsumer, 'POST','checkLink/saveOrUpdate', this.ckeckLinkEditForm.checkLinks,res => {
+      requestByClient(supplierConsumer, 'POST','courseTaskCheckLink/saveOrUpdate', this.ckeckLinkEditForm.courseTaskCheckLinks,res => {
         if (res.data.succ) {
           this.dialogVisible = false;
           this.$message({

@@ -62,22 +62,25 @@ public class CheckLinkController {
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);
     }
+
     @RequestMapping("/saveOrUpdate")
     @AuthResource(scope = "saveOrUpdate", name = "更新或保存考核环节列表")
     public ActionResult saveOrUpdate(@RequestBody List<CheckLink> checkLinks){
-        AtomicReference<Float> mixAll = new AtomicReference<>(0F);
+        AtomicReference<Boolean> check = new AtomicReference<>(true);
         checkLinks.forEach(i -> {
-            mixAll.set((float)(mixAll.get() + i.getMix()));
+            if(i.getTargetScore() <= 0){
+                check.set(false);
+            }
             if(i.getId() == null){
                 i.setCreatedDate(LocalDateTime.now());
             }
             i.setUpdateDate(LocalDateTime.now());
         });
-
-        if(mixAll.get() < 0.000001f || mixAll.get() > 1.000001f){
-            return ActionResult.ofFail("权重系数不能大于1或小于0");
+        if(check.get()){
+            checkLinkService.saveOrUpdateBatch(checkLinks);
+            return ActionResult.ofSuccess();
+        }else {
+            return ActionResult.ofFail("成绩不能小于或等于0");
         }
-        checkLinkService.saveOrUpdateBatch(checkLinks);
-        return ActionResult.ofSuccess();
     }
 }

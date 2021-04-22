@@ -7,6 +7,14 @@
       <el-form-item>
         <el-button type="primary" @click="getList()">查询</el-button>
       </el-form-item>
+      <span style="float: right;margin-right: 30px">
+        <el-form-item>
+          <el-button type="warning" @click="handleAddCourse()">新增</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="handleDelete()">删除</el-button>
+        </el-form-item>
+      </span>
     </el-form>
     <el-table
       ref="multipleTable"
@@ -18,10 +26,6 @@
       <el-table-column
         type="selection"
         width="55">
-      </el-table-column>
-      <el-table-column
-        type="index"
-        width="50">
       </el-table-column>
       <el-table-column
         prop="id"

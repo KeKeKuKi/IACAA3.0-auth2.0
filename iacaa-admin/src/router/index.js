@@ -142,13 +142,19 @@ export const asyncRoutes = [
     path: '/Course',
     component: Layout,
     redirect: '/Course',
-    meta: { title: '课程目标', icon: 'edit', affix: true, roles: ['adminExclusive', 'Iacaa20Server:Menue:CourseTask']},
+    meta: { title: '课程及课程目标管理', icon: 'edit', affix: true, roles: ['adminExclusive', 'Iacaa20Server:Menue:CourseTask']},
     children: [
+      {
+        path: 'ChecklinkEdit',
+        component: () => import('@/views/course/ChecklinkEdit'),
+        name: 'ChecklinkEdit',
+        meta: { title: '编辑考核环节', icon: 'edit', affix: true }
+      },
       {
         path: 'CourseTask',
         component: () => import('@/views/course/CourseTask'),
         name: 'CourseTask',
-        meta: { title: '课程目标关联指标点', icon: 'edit', affix: true }
+        meta: { title: '编辑课程目标', icon: 'edit', affix: true }
       },
       {
         path: 'CheckLinks',
@@ -168,7 +174,13 @@ export const asyncRoutes = [
         path: 'CheckLinkScore',
         component: () => import('@/views/score/CheckLinkScore'),
         name: 'CheckLinkScore',
-        meta: { title: '录入直接评价数据', icon: 'list', affix: true }
+        meta: { title: '录入成绩', icon: 'list', affix: true }
+      },
+      {
+        path: 'ScoreShow',
+        component: () => import('@/views/score/ScoreShow'),
+        name: 'ScoreShow',
+        meta: { title: '查看成绩', icon: 'chart', affix: true }
       }
     ]
   },

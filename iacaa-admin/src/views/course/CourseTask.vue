@@ -38,11 +38,6 @@
       label="简介"
       width="600">
     </el-table-column>
-    <el-table-column
-      prop="editUserId"
-      label="课程管理员"
-      width="150">
-    </el-table-column>
     <el-table-column label="操作" >
       <template slot-scope="scope">
         <el-button type="primary" :disabled="scope.row.editStatus === 0" @click="handleEditForm(scope.row)">编辑课程目标</el-button>
@@ -138,7 +133,8 @@ export default {
         courseTasks: [],
       }
     }
-  },methods: {
+  },
+  methods: {
     changeEditStatus(id){
       console.log(id)
     },

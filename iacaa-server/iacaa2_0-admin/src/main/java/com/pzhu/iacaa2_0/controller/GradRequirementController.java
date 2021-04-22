@@ -180,107 +180,107 @@ public class GradRequirementController{
         return aBoolean ? ActionResult.ofSuccess() : ActionResult.ofFail("统计失败");
     }
 
-    @RequestMapping("/randData")
-//    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
-    public void randData() {
-        NumberFormat nf = NumberFormat.getNumberInstance();
-        nf.setMaximumFractionDigits(2);
-        for (int year = 2019; year < 2022; year++) {
-            GradRequirementVo vo = new GradRequirementVo();
-            vo.setYear(year);
-            List<GradRequirement> list = gradRequirementService.list(vo);
-            int finalYear = year;
-            list.forEach(req -> {
-                int count = (int)((Math.random()) * 3 + 2);
-                List<Target> targets = new ArrayList<>();
-                for (int i = 0; i < count; i++) {
-                    Target target = new Target();
-                    target.setYear(finalYear);
-                    target.setReqId(req.getId().intValue());
-                    target.setDiscribe(getString());
-                    targets.add(target);
-                    target.setCreatedDate(LocalDateTime.now());
-                    target.setUpdateDate(LocalDateTime.now());
-                }
-                targets.forEach(target -> {
-                    targetService.save(target);
-                });
-            });
-
-            TargetVo query = new TargetVo();
-            query.setYear(year);
-            List<Target> list1 = targetService.list(query);
-            int finalYear1 = year;
-            list1.forEach(target -> {
-                List<CourseTarget> courseTargets = new ArrayList<>();
-                Double allMix = 1D;
-                long courseId = (long)(Math.random() * 49 + 1);
-                while (allMix > 0.1){
-                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.1));
-                    CourseTarget courseTarget = new CourseTarget();
-                    courseTarget.setTargetId(target.getId());
-                    courseTarget.setCourseId(courseId%50+1);
-                    courseTarget.setCreatedDate(LocalDateTime.now());
-                    courseTarget.setUpdateDate(LocalDateTime.now());
-                    if(allMix - mix > 0.1){
-                        allMix -= mix;
-                        courseTarget.setMix(mix);
-                    }else {
-                        courseTarget.setMix(Double.parseDouble(nf.format(allMix)));
-                        allMix -= mix;
-                    }
-                    courseTargets.add(courseTarget);
-                    List<CourseTask> courseTasks = new ArrayList<>();
-                    Double allMix2 = 1D;
-                    while (allMix2 > 0.1){
-                        double mix2 = Double.parseDouble(nf.format(Math.random()/2 + 0.3));
-                        CourseTask courseTask = new CourseTask();
-                        courseTask.setYear(finalYear1);
-                        courseTask.setCourseId((int)courseId%50+1);
-                        courseTask.setDescribes(getString());
-                        courseTask.setCreatedDate(LocalDateTime.now());
-                        courseTask.setUpdateDate(LocalDateTime.now());
-                        courseTask.setTargetId(target.getId().intValue());
-                        if(allMix2 - mix2 > 0.1){
-                            courseTask.setMix(mix2);
-                            allMix2 -= mix2;
-                        }else {
-                            courseTask.setMix(Double.parseDouble(nf.format(allMix2)));
-                            allMix2 -= mix2;
-                        }
-                        courseTasks.add(courseTask);
-                    }
-                    courseTaskService.saveBatch(courseTasks);
-                    courseId += (Math.random() * 6 + 1);
-                }
-                courseTargetService.saveBatch(courseTargets);
-            });
-        }
-        List<CourseTask> tasks = courseTaskService.list();
-        tasks.forEach(courseTask -> {
-            List<CheckLink> checkLinks = new ArrayList<>();
-            Double allMix = 1D;
-            while (allMix > 0.1){
-                double mix = Double.parseDouble(nf.format(Math.random()/3 + 0.1));
-                CheckLink checkLink = new CheckLink();
-                checkLink.setCreatedDate(LocalDateTime.now());
-                checkLink.setUpdateDate(LocalDateTime.now());
-                checkLink.setTargetScore(100D);
-                checkLink.setName(getString().substring(0,5));
-                checkLink.setAverageScore((int)(Math.random()*50) + 50d);
-                checkLink.setTaskId(courseTask.getId().intValue());
-                if(allMix - mix > 0.1){
-                    checkLink.setMix(mix);
-                    allMix -= mix;
-                }else {
-                    checkLink.setMix(Double.parseDouble(nf.format(allMix)));
-                    allMix -= mix;
-                }
-                checkLinks.add(checkLink);
-            }
-            checkLinkService.saveBatch(checkLinks);
-        });
-    }
+//    @RequestMapping("/randData")
+////    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
+//    public void randData() {
+//        NumberFormat nf = NumberFormat.getNumberInstance();
+//        nf.setMaximumFractionDigits(2);
+//        for (int year = 2019; year < 2022; year++) {
+//            GradRequirementVo vo = new GradRequirementVo();
+//            vo.setYear(year);
+//            List<GradRequirement> list = gradRequirementService.list(vo);
+//            int finalYear = year;
+//            list.forEach(req -> {
+//                int count = (int)((Math.random()) * 3 + 2);
+//                List<Target> targets = new ArrayList<>();
+//                for (int i = 0; i < count; i++) {
+//                    Target target = new Target();
+//                    target.setYear(finalYear);
+//                    target.setReqId(req.getId().intValue());
+//                    target.setDiscribe("指标点描述指标点描述指标点描述指标点描述");
+//                    targets.add(target);
+//                    target.setCreatedDate(LocalDateTime.now());
+//                    target.setUpdateDate(LocalDateTime.now());
+//                }
+//                targets.forEach(target -> {
+//                    targetService.save(target);
+//                });
+//            });
+//
+//            TargetVo query = new TargetVo();
+//            query.setYear(year);
+//            List<Target> list1 = targetService.list(query);
+//            int finalYear1 = year;
+//            list1.forEach(target -> {
+//                List<CourseTarget> courseTargets = new ArrayList<>();
+//                Double allMix = 1D;
+//                long courseId = (long)(Math.random() * 49 + 1);
+//                while (allMix > 0.1){
+//                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.1));
+//                    CourseTarget courseTarget = new CourseTarget();
+//                    courseTarget.setTargetId(target.getId());
+//                    courseTarget.setCourseId(courseId%50+1);
+//                    courseTarget.setCreatedDate(LocalDateTime.now());
+//                    courseTarget.setUpdateDate(LocalDateTime.now());
+//                    if(allMix - mix > 0.1){
+//                        allMix -= mix;
+//                        courseTarget.setMix(mix);
+//                    }else {
+//                        courseTarget.setMix(Double.parseDouble(nf.format(allMix)));
+//                        allMix -= mix;
+//                    }
+//                    courseTargets.add(courseTarget);
+//                    List<CourseTask> courseTasks = new ArrayList<>();
+//                    Double allMix2 = 1D;
+//                    while (allMix2 > 0.1){
+//                        double mix2 = Double.parseDouble(nf.format(Math.random()/2 + 0.3));
+//                        CourseTask courseTask = new CourseTask();
+//                        courseTask.setYear(finalYear1);
+//                        courseTask.setCourseId((int)courseId%50+1);
+//                        courseTask.setDescribes("某课程目标的描述某课程目标的描述某课程目标的描述");
+//                        courseTask.setCreatedDate(LocalDateTime.now());
+//                        courseTask.setUpdateDate(LocalDateTime.now());
+//                        courseTask.setTargetId(target.getId().intValue());
+//                        if(allMix2 - mix2 > 0.1){
+//                            courseTask.setMix(mix2);
+//                            allMix2 -= mix2;
+//                        }else {
+//                            courseTask.setMix(Double.parseDouble(nf.format(allMix2)));
+//                            allMix2 -= mix2;
+//                        }
+//                        courseTasks.add(courseTask);
+//                    }
+//                    courseTaskService.saveBatch(courseTasks);
+//                    courseId += (Math.random() * 6 + 1);
+//                }
+//                courseTargetService.saveBatch(courseTargets);
+//            });
+//        }
+//        List<CourseTask> tasks = courseTaskService.list();
+//        tasks.forEach(courseTask -> {
+//            List<CheckLink> checkLinks = new ArrayList<>();
+//            Double allMix = 1D;
+//            while (allMix > 0.1){
+//                double mix = Double.parseDouble(nf.format(Math.random()/3 + 0.1));
+//                CheckLink checkLink = new CheckLink();
+//                checkLink.setCreatedDate(LocalDateTime.now());
+//                checkLink.setUpdateDate(LocalDateTime.now());
+//                checkLink.setTargetScore(100D);
+//                checkLink.setName("某考核环节");
+//                checkLink.setAverageScore((int)(Math.random()*50) + 50d);
+//                checkLink.setTaskId(courseTask.getId().intValue());
+//                if(allMix - mix > 0.1){
+//                    checkLink.setMix(mix);
+//                    allMix -= mix;
+//                }else {
+//                    checkLink.setMix(Double.parseDouble(nf.format(allMix)));
+//                    allMix -= mix;
+//                }
+//                checkLinks.add(checkLink);
+//            }
+//            checkLinkService.saveBatch(checkLinks);
+//        });
+//    }
 
     private String getString(){
         int count = (int)((Math.random()) * 30 + 12);

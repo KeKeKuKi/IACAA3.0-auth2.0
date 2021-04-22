@@ -15,37 +15,44 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author ZhaoZezhong
- * @since 2021-01-15
+ * @since 2021-04-21
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("t_check_link")
-public class CheckLink extends BaseEntity {
+@TableName("t_course_task_check_link")
+public class CourseTaskCheckLink extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 对应课程
+     * 课程目标
      */
-    @TableField("course_id")
-    private Long courseId;
+    @TableField("course_task_id")
+    private Integer courseTaskId;
 
     /**
-     * 标题
+     * 考核环节
      */
-    @TableField("name")
-    private String name;
+    @TableField("check_link_id")
+    private Integer checkLinkId;
 
     /**
-     * 目标成绩
+     * 支撑权重
      */
-    @TableField("target_score")
-    private Double targetScore;
+    @TableField("mix")
+    private Double mix;
 
     /**
-     * 平均成绩
+     * 创建时间
      */
-    @TableField("average_score")
-    private Double averageScore;
+    @TableField("created_date")
+    private LocalDateTime createdDate;
+
+    /**
+     * 更新时间
+     */
+    @TableField("update_date")
+    private LocalDateTime updateDate;
+
 
 }

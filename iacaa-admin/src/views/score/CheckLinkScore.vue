@@ -16,56 +16,66 @@
       tooltip-effect="dark"
     >
       <el-table-column
-        type="selection"
-        width="55"
-      />
-      <el-table-column
-        type="index"
-        label="序号"
-        width="100"
-      />
+        prop="id"
+        label="课程编号"
+        width="100">
+      </el-table-column>
       <el-table-column
         prop="name"
-        label="课程名称"
+        label="名称"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="image"
+        label="简介"
+        width="600">
+      </el-table-column>
+<!--        <el-table-column prop="courseTasks" type="expand" label="课程目标" width="1000">-->
+<!--        <template slot-scope="courseScope">-->
+<!--          <el-table :data="courseScope.row.courseTasks" stripe>-->
+<!--            <el-table-column-->
+<!--              prop="year"-->
+<!--              label="年份"-->
+<!--              width="200"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              prop="describes"-->
+<!--              label="课程目标描述"-->
+<!--              width="700"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              prop="createdDate"-->
+<!--              label="创建时间"-->
+<!--              width="200"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              prop="updateDate"-->
+<!--              label="最终更新时间"-->
+<!--              width="200"-->
+<!--            />-->
+<!--            <el-table-column label="操作"-->
+<!--                             prop="courseTasks">-->
+<!--              <template slot-scope="courseTaskScope">-->
+<!--                <el-button :disabled="courseScope.row.editStatus === 0" v-if="courseTaskScope.row.year === new Date().getFullYear()"-->
+<!--                           type="primary" icon="el-icon-edit" circle @click="handleCheckLinkEditForm(courseScope.row.name, courseTaskScope.row)" />-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--          </el-table>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column
+        prop=""
+        label="操作"
         width=""
-      />
-        <el-table-column prop="courseTasks" type="expand" label="课程目标" width="1000">
-        <template slot-scope="courseScope">
-          <el-table :data="courseScope.row.courseTasks" stripe>
-            <el-table-column
-              prop="year"
-              label="年份"
-              width="200"
-            />
-            <el-table-column
-              prop="describes"
-              label="课程目标描述"
-              width="700"
-            />
-            <el-table-column
-              prop="createdDate"
-              label="创建时间"
-              width="200"
-            />
-            <el-table-column
-              prop="updateDate"
-              label="最终更新时间"
-              width="200"
-            />
-            <el-table-column label="操作"
-                             prop="courseTasks">
-              <template slot-scope="courseTaskScope">
-                <el-button :disabled="courseScope.row.editStatus === 0" v-if="courseTaskScope.row.year === new Date().getFullYear()"
-                           type="primary" icon="el-icon-edit" circle @click="handleCheckLinkEditForm(courseScope.row.name, courseTaskScope.row)" />
-              </template>
-            </el-table-column>
-          </el-table>
+      >
+        <template slot-scope="scope">
+          <el-button type="primary" @click="inputScore()">录入成绩</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog
-      title="课程目标成绩录入"
+      title="课程成绩录入"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       width="30%"
@@ -94,18 +104,6 @@
               label="平均分">
             </el-table-column>
           </el-table>
-            <!--eslint-disable-next-line-->
-            <span v-for="(item,index) in ckeckLinkEditForm.checkLinks" type="text" autocomplete="off">
-              <el-select v-model="item.name" placeholder="标题" disabled filterable style="width: 45%;margin-top: 10px">
-                <el-option label="期末考试" value="期末考试" />
-                <el-option label="期中考试" value="期中考试" />
-                <el-option label="日常作业" value="日常作业" />
-                <el-option label="课堂表现" value="课堂表现" />
-                <el-option label="日常考勤" value="日常考勤" />
-              </el-select>
-              <el-input v-model="item.targetScore"  label="目标分数" style="width: 25%;margin-top: 10px" disabled/>
-              <el-input v-model="item.averageScore"  label="平均分数" style="width: 25%;margin-top: 10px" @change="checkAvgScore(item.averageScore,item.targetScore,index)"/>
-            </span>
           </el-form-item>
         </el-form>
       </div>
@@ -155,6 +153,20 @@ export default {
     this.getCourseList()
   },
   methods:{
+    inputScore(){
+      requestByClient(supplierConsumer, 'POST', 'course/voList', {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        word: this.serchForm.word
+      }, res => {
+        if (res.data.succ) {
+          this.courses = res.data.data.list
+          this.total = res.data.data.total
+          this.pageSize = res.data.data.pageSize
+          this.currentPage = res.data.data.pageNum
+        }
+      })
+    },
     checkAvgScore(avg,target,index){
       if(avg > target || avg < 0){
         this.$message({

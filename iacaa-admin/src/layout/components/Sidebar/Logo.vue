@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       title: 'IACAA2.0',
-      logo: 'https://images6211.oss-cn-beijing.aliyuncs.com/logo.png?Expires=1618969778&OSSAccessKeyId=TMP.3KeuPh61zC9vyXjXgeCFmjfyUkLb3yKViKvvYN4XAsrQiiJmAbCz1AguXKxuiu7j67nJhN27GuG1ys9ZZzrhEqC4FdRTHH&Signature=In0YJvNc0HNxedXIkiuUMix897E%3D'
+      logo: 'https://images6211.oss-cn-beijing.aliyuncs.com/logo.png?Expires=1619086544&OSSAccessKeyId=TMP.3KfXNkJS1txSE7JEjtQR6Rjwy37AKomXCZMmVa7hAJPLSUYwHzMAgMxKHJQmRD4JUgwh3uvdePcAnHkXhnb2sT8uVeUsD2&Signature=x7OTvu1HfvXkTx8qZnB7TxFUYQQ%3D'
     }
   }
 }
@@ -55,8 +55,8 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
       vertical-align: middle;
       margin-right: 12px;
     }
