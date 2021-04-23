@@ -37,12 +37,12 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean summaryCourseTask(){
+    public Boolean summaryCourseTask(Integer year){
         QueryWrapper<CourseTask> courseTaskQueryWrapper = new QueryWrapper<>();
-        courseTaskQueryWrapper.eq("year",LocalDateTime.now().getYear());
+        courseTaskQueryWrapper.eq("year",year);
         List<CourseTask> courseTasks = baseMapper.selectList(courseTaskQueryWrapper);
         courseTasks.forEach(i -> {
-            checkLinkService.summaryByCourseTaskID(i.getId());
+            checkLinkService.summaryByCourseTaskID(i.getId(),year);
             baseMapper.summaryStuScore(i.getId());
         });
         return true;

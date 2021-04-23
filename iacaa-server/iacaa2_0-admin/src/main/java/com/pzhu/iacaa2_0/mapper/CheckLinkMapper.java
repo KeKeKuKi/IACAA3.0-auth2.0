@@ -23,4 +23,8 @@ public interface CheckLinkMapper extends BaseMapper<CheckLink> {
     Integer summaryByCourseTaskId(Long id);
 
     List<CheckLink> listBySourseTask(Long id);
+
+    List<CheckLink> getByCourseId(Long id);
+
+    Integer coverNullToZero();
 }

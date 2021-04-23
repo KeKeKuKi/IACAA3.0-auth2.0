@@ -23,6 +23,8 @@
         <result column="update_date" property="updateDate" />
         <association property="courseTasks" column="id"
                      select="com.pzhu.iacaa2_0.mapper.CourseTaskMapper.getByCourseId"/>
+        <association property="checkLinks" column="id"
+                     select="com.pzhu.iacaa2_0.mapper.CheckLinkMapper.getByCourseId"/>
     </resultMap>
 
 
@@ -32,7 +34,23 @@
         id, name, image, edit_user_id, edit_status, created_date, update_date
     </sql>
 
-    <select id="voList" resultMap="voMap" parameterType="com.pzhu.iacaa2_0.entity.Course">
+    <select id="voList" resultMap="voMap" parameterType="com.pzhu.iacaa2_0.entityVo.CourseVo">
+        select <include refid="Base_Column_List"></include>
+        from t_course a
+        <where>
+            <trim prefixOverrides="AND">
+                <if test="word != null and word !=''">
+                    AND (a.name like CONCAT(CONCAT('%',#{word}),'%'))
+                </if>
+                <if test="editUserId != null and editUserId !=''">
+                    AND edit_user_id = #{editUserId}
+                </if>
+            </trim>
+        </where>
+        ORDER by id
+    </select>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="com.pzhu.iacaa2_0.entityVo.CourseVo">
         select <include refid="Base_Column_List"></include>
         from t_course a
         <where>

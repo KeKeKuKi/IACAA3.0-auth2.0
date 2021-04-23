@@ -37,6 +37,12 @@ public class CheckLink extends BaseEntity {
     private String name;
 
     /**
+     * 标题
+     */
+    @TableField("year")
+    private Integer year;
+
+    /**
      * 目标成绩
      */
     @TableField("target_score")

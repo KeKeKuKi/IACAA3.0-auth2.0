@@ -115,8 +115,8 @@ public class TargetController {
 
     @RequestMapping("/summaryAll")
     @AuthResource(scope = "summaryAll", name = "同步指标点年度成绩数据")
-    public ActionResult summaryAll(){
-        Boolean aBoolean = targetService.summaryThisYearTargetsGrade();
+    public ActionResult summaryAll(@RequestBody Target target){
+        Boolean aBoolean = targetService.summaryThisYearTargetsGrade(target.getYear());
         return aBoolean ? ActionResult.ofSuccess() : ActionResult.ofFail("统计失败");
     }
 }

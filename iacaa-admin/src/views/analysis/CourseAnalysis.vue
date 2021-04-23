@@ -92,7 +92,9 @@ export default {
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {}, res => {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {
+        year: 2021
+      }, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',
@@ -111,21 +113,22 @@ export default {
       requestByClient(supplierConsumer, 'POST', 'courseTask/voList', this.serchForm, res => {
         if (res.data.succ) {
           let data = res.data.data
-          let courseTasksName = data.map(i => {
-            return (i.id + ':(' + i.course.name + ')' + i.describes)
-          })
-          let sysScores = data.map(i => {
-            return i.sysGrade ? (i.sysGrade).toFixed(2) * 100 : 0
-          })
-          let stuScores = data.map(i => {
-            return i.stuGrade ? (i.stuGrade).toFixed(2) * 100 : 0
-          })
-          this.setChartData(courseTasksName, sysScores, stuScores)
+
+          this.setChartData(data)
         }
         this.loading = false
       })
     },
-    setChartData(names, sysScores, stuScores) {
+    setChartData(data) {
+      let courseTasksName = data.map(i => {
+        return (i.course.name + ':' + i.describes)
+      })
+      let sysScores = data.map(i => {
+        return i.sysGrade ? (i.sysGrade).toFixed(2) * 100 : 0
+      })
+      let stuScores = data.map(i => {
+        return i.stuGrade ? (i.stuGrade).toFixed(2) * 100 : 0
+      })
       let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
@@ -163,7 +166,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: names,
+          data: courseTasksName,
           axisLabel: {
             interval: 0,
             rotate: 90
@@ -226,12 +229,10 @@ export default {
       option && myChart.setOption(option)
       //点击事件
       myChart.on('click', function (params) {
-        let po = params.name.indexOf(':')
-        vue.selectOneCourseTask(parseInt(params.name.substring(0, po)))
+        vue.selectOneCourseTask(data[params.dataIndex].id)
       });
     },
     selectOneCourseTask(id) {
-      console.log(id)
       requestByClient(supplierConsumer, 'POST', 'courseTask/getOne', {
         id: id
       }, res => {
@@ -299,15 +300,15 @@ export default {
       })
     },
     setsysElinkMixPie() {
-      requestByClient(supplierConsumer, 'POST', 'checkLink/listBySourseTask', {
-        id: this.viewingCourseTask.id
+      requestByClient(supplierConsumer, 'POST', 'courseTaskCheckLink/voList', {
+        courseTaskId: this.viewingCourseTask.id
       }, res => {
         let data = res.data.data
         let nams = data.map(i => {
-          return i.name
+          return i.checkLink.name
         })
         let counts = data.map(i => {
-          return ((i.averageScore / i.targetScore) * 100).toFixed(2)
+          return ((i.checkLink.averageScore / i.checkLink.targetScore) * 100).toFixed(2)
         })
         let chartDom1 = document.getElementById('sysElinkScoreBar');
         let myChart1 = echarts.init(chartDom1);
@@ -337,7 +338,7 @@ export default {
           },
           series: [
             {
-              name: '2011年',
+              name: '',
               type: 'bar',
               data: counts,
               itemStyle: {
@@ -357,7 +358,7 @@ export default {
         let pieData = data.map(i => {
           return {
             value: i.mix,
-            name: i.name
+            name: i.checkLink.name
           }
         })
 

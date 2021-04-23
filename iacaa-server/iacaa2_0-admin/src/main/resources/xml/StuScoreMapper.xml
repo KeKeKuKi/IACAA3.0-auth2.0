@@ -18,4 +18,30 @@
         id, check_link_id, stuno, score, created_date, update_date, mix_score
     </sql>
 
+    <select id="list" resultMap="BaseResultMap" parameterType="com.pzhu.iacaa2_0.entity.StuScore">
+        select
+        <include refid="Base_Column_List"></include>
+        from t_stu_score
+        <where>
+            <trim prefixOverrides="AND">
+                <if test="checkLinkId != null and checkLinkId !=''">
+                    AND check_link_id = #{checkLinkId}
+                </if>
+                <if test="stuno != null and stuno !=''">
+                    AND stuno = #{stuno}
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <update id="summaryByCheckLinkId"  parameterType="java.lang.Long">
+        UPDATE t_check_link a
+        set average_score = (
+            SELECT AVG(score)
+            from t_stu_score
+            WHERE check_link_id = #{id}
+            GROUP BY check_link_id)
+        WHERE id = #{id}
+    </update>
+
 </mapper>

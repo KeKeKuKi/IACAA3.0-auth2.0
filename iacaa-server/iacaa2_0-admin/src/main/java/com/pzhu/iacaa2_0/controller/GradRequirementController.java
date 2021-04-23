@@ -175,8 +175,8 @@ public class GradRequirementController{
 
     @RequestMapping("/summaryAll")
     @AuthResource(scope = "summaryAll", name = "同步本年度成绩数据")
-    public ActionResult summaryAll() {
-        Boolean aBoolean = gradRequirementService.summaryThisYearReqGrade();
+    public ActionResult summaryAll(@RequestBody GradRequirement gradRequirement) {
+        Boolean aBoolean = gradRequirementService.summaryThisYearReqGrade(gradRequirement.getYear());
         return aBoolean ? ActionResult.ofSuccess() : ActionResult.ofFail("统计失败");
     }
 

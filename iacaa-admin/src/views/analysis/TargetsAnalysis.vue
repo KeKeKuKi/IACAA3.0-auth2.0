@@ -83,21 +83,21 @@ export default {
       requestByClient(supplierConsumer, 'POST', 'target/list', this.serchForm, res => {
         if (res.data.succ) {
           let data = res.data.data
-          let names = data.map(i => {
-            return i.id + ':' + i.discribe
-          })
-          let stuGrades = data.map(i => {
-            return (i.stuGrade*100).toFixed(2)
-          })
-          let sysGrades = data.map(i => {
-            return (i.sysGrade*100).toFixed(2)
-          })
-          this.setChartData(names, stuGrades, sysGrades)
+          this.setChartData(data)
         }
         this.loading = false
       })
     },
-    setChartData(names, stuGrades, sysGrades) {
+    setChartData(data) {
+      let names = data.map(i => {
+        return i.discribe
+      })
+      let stuGrades = data.map(i => {
+        return (i.stuGrade*100).toFixed(2)
+      })
+      let sysGrades = data.map(i => {
+        return (i.sysGrade*100).toFixed(2)
+      })
       let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
@@ -197,8 +197,7 @@ export default {
       option && myChart.setOption(option)
       //点击事件
       myChart.on('click', function (params) {
-        let po = params.name.indexOf(':')
-        vue.handleChange(parseInt(params.name.substring(0, po)))
+        vue.handleChange(data[params.dataIndex].id)
       });
     },
     open() {
@@ -256,7 +255,7 @@ export default {
         '#9a5a2b',
       ]
       let tasksName = courseTasks.map(i => {
-        return i.course.name + ':' + i.id + i.describes
+        return i.course.name + ':' + i.describes
       })
 
       let tasksScores = courseTasks.map(i => {
@@ -350,7 +349,7 @@ export default {
       let courseTasks = this.targetChartForm.courseTasks
       let tasksDta = new Array(courseTasks.length)
       for (let courseTask of courseTasks) {
-        dtataNames.push(courseTask.id + courseTask.describes)
+        dtataNames.push(courseTask.describes)
         let courseTaskMix = 0
         for (let courseTarget of courseTargets) {
           if (courseTask.course.id === courseTarget.course.id) {
@@ -359,7 +358,7 @@ export default {
         }
         tasksDta.push({
           value: courseTaskMix.toFixed(2),
-          name: courseTask.id + courseTask.describes
+          name: courseTask.describes
         })
       }
       option = {
@@ -440,7 +439,9 @@ export default {
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {}, res => {
+      requestByClient(supplierConsumer, 'POST', 'target/summaryAll', {
+        year: 2021
+      }, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',

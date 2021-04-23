@@ -25,7 +25,9 @@ public interface CourseMapper extends BaseMapper<Course> {
      * @Return: List<Course>
      * @Create: 2021/1/20 11:16
      */
-    List<Course> fuzzyQuery(Course course);
+    List<Course> fuzzyQuery(CourseVo vo);
 
     List<CourseVo> voList(CourseVo vo);
+
+    List<Course> list(CourseVo vo);
 }

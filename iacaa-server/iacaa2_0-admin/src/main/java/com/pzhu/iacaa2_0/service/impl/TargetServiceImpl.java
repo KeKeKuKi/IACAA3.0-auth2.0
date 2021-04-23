@@ -34,13 +34,13 @@ public class TargetServiceImpl extends ServiceImpl<TargetMapper, Target> impleme
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Boolean summaryThisYearTargetsGrade() {
+    public Boolean summaryThisYearTargetsGrade(Integer year) {
         //首先统计课程目标分数
-        courseTaskService.summaryCourseTask();
+        courseTaskService.summaryCourseTask(year);
 
         //其次统计指标点分数
         QueryWrapper<Target> targetQueryWrapper = new QueryWrapper<>();
-        targetQueryWrapper.eq("year", LocalDateTime.now().getYear());
+        targetQueryWrapper.eq("year", year);
 
         List<Target> targets = baseMapper.selectList(targetQueryWrapper);
         targets.forEach(i -> {

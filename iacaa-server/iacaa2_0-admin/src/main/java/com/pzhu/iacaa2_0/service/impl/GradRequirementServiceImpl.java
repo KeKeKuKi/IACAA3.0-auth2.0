@@ -48,13 +48,13 @@ public class GradRequirementServiceImpl extends ServiceImpl<GradRequirementMappe
 
     @Override
     @Transactional
-    public Boolean summaryThisYearReqGrade() {
+    public Boolean summaryThisYearReqGrade(Integer year) {
         //首先统计本年度指标点分数
-        targetService.summaryThisYearTargetsGrade();
+        targetService.summaryThisYearTargetsGrade(year);
 
         //其次统计本年度毕业要求分数
         QueryWrapper<GradRequirement> gradRequirementQueryWrapper = new QueryWrapper<>();
-        gradRequirementQueryWrapper.eq("year", LocalDateTime.now().getYear());
+        gradRequirementQueryWrapper.eq("year", year);
         List<GradRequirement> gradRequirements = baseMapper.selectList(gradRequirementQueryWrapper);
         gradRequirements.forEach(i -> {
             baseMapper.summaryByReqId(i.getId());

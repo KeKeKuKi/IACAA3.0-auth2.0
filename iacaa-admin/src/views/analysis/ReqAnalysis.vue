@@ -77,7 +77,7 @@ export default {
 
 
       let names = targets.map(i => {
-        return i.id + ':' + i.discribe
+        return i.discribe
       })
 
       let sysScores = targets.map(i => {
@@ -161,7 +161,9 @@ export default {
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {}, res => {
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {
+        year: 2021
+      }, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',
@@ -183,21 +185,21 @@ export default {
       }, res => {
         if (res.data.succ) {
           let data = res.data.data
-          let reqs = data.map(i => {
-            return i.id + ':' + i.name
-          })
-          let sysScores = data.map(i => {
-            return (i.sysGrade * 100).toFixed(2)
-          })
-          let stuScores = data.map(i => {
-            return (i.stuGrade * 100).toFixed(2)
-          })
-          this.setChartData(reqs, sysScores, stuScores)
+          this.setChartData(data)
         }
         this.loading = false
       })
     },
-    setChartData(reqs, sysScores, stuScores) {
+    setChartData(data) {
+      let reqs = data.map(i => {
+        return i.name
+      })
+      let sysScores = data.map(i => {
+        return (i.sysGrade * 100).toFixed(2)
+      })
+      let stuScores = data.map(i => {
+        return (i.stuGrade * 100).toFixed(2)
+      })
       let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
@@ -298,8 +300,7 @@ export default {
       option && myChart.setOption(option)
       //点击事件
       myChart.on('click', function (params) {
-        let po = params.name.indexOf(':')
-        vue.selectOneReq(parseInt(params.name.substring(0, po)))
+        vue.selectOneReq(data[params.dataIndex].id)
       });
     },
     selectOneReq(id) {

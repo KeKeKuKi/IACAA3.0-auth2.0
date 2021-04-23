@@ -22,4 +22,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     public List<CourseVo> voList(CourseVo vo) {
         return baseMapper.voList(vo);
     }
+
+    @Override
+    public List<Course> list(CourseVo vo) {
+        return baseMapper.list(vo);
+    }
 }

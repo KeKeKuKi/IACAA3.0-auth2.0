@@ -45,10 +45,6 @@
         width="55"
       />
       <el-table-column
-        type="index"
-        width="50"
-      />
-      <el-table-column
         prop="year"
         label="年份"
         width="80"

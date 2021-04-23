@@ -31,11 +31,6 @@
         width="55"
       />
       <el-table-column
-        type="index"
-        label="序号"
-        width="100"
-      />
-      <el-table-column
         prop="year"
         label="年份"
         width="100"

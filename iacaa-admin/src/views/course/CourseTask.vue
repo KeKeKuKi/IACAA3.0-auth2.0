@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <div style="padding: 20px">
   <el-form :inline="true" :model="serchForm" class="demo-form-inline" style="height: 50px">
     <el-form-item label="">
       <el-input v-model="serchForm.word" placeholder="名称" clearable></el-input>
@@ -16,17 +16,9 @@
     tooltip-effect="dark"
     @selection-change="handleSelectionChange">
     <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column>
-    <el-table-column
-      type="index"
-      width="50">
-    </el-table-column>
-    <el-table-column
       prop="id"
       label="课程编号"
-      width="100">
+      width="200">
     </el-table-column>
     <el-table-column
       prop="name"
@@ -82,7 +74,7 @@
           <span v-for="(item,index) in editForm.courseTasks" type="text" autocomplete="off">
             <el-input type="text" autocomplete="off" v-model="item.describes" style="width: 55%;margin-top: 10px"></el-input>
             <el-select v-model="item.target.id" placeholder="可选支撑指标点" clearable style="width: 30%;margin-top: 10px">
-              <el-option v-for="(item1,index1) in ableTarget" :key="index1" :label="item1.target.id + ':' + item1.target.discribe" :value="item1.target.id"></el-option>
+              <el-option v-for="(item1,index1) in ableTarget" :key="index1" :label="item1.target.discribe" :value="item1.target.id"></el-option>
             </el-select>
             <el-input-number v-model="item.mix" :min="0.1" :max="1" step="0.1" label="权重系数" style="width: 10%;margin-top: 10px"></el-input-number>
             <el-button type="danger" icon="el-icon-delete" circle @click="deleteDiscribe(index)"></el-button>
@@ -104,7 +96,7 @@
     layout="total, sizes, prev, pager, next, jumper"
     :total="total">
   </el-pagination>
-  </span>
+  </div>
 </template>
 
 <script>

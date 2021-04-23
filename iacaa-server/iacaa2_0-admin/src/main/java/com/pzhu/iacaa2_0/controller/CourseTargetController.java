@@ -71,12 +71,15 @@ public class CourseTargetController {
     @RequestMapping("/saveOrUpdate")
     @AuthResource(scope = "saveOrUpdate", name = "保存或更新课程-指标点")
     public ActionResult saveOrUpdate(@RequestBody List<CourseTargetVo> vos){
+        if(vos.isEmpty()){
+            return ActionResult.ofFail("数据不得为空");
+        }
         List<CourseTarget> courseTargets = new ArrayList<>();
         AtomicReference<Float> totalMix = new AtomicReference<>((float) 0);
         Map<String,String> checkName = new HashMap<>();
         AtomicBoolean nameOk = new AtomicBoolean(true);
         vos.forEach(i -> {
-            if(checkName.get(i.getCourse().getId().toString()) != null){
+            if(StringUtils.isEmpty(i.getCourse().getId()) || checkName.get(i.getCourse().getId().toString()) != null){
                 nameOk.set(false);
             }else {
                 checkName.put(i.getCourse().getId().toString(),"have");
@@ -95,13 +98,10 @@ public class CourseTargetController {
             courseTargets.add(courseTarget);
         });
         if(!nameOk.get()){
-            return ActionResult.ofFail(200,"课程重复");
+            return ActionResult.ofFail(200,"课程信息不得为空或重复");
         }
-        if(totalMix.get() > 1.000001){
-            return ActionResult.ofFail(200,"权重总和不能大于1");
-        }
-        if(totalMix.get() < 0){
-            return ActionResult.ofFail(200,"权重总和不能小于0");
+        if(totalMix.get() > 1.000001 || totalMix.get() < 0.999999999){
+            return ActionResult.ofFail(200,"权重总必须为1");
         }
         boolean b = courseTargetService.saveOrUpdateBatch(courseTargets);
         return b ? ActionResult.ofSuccess() : ActionResult.ofFail(200,"后台异常，更新失败");

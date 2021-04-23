@@ -26,4 +26,6 @@ public interface ICourseService extends IService<Course> {
      */
     List<CourseVo> voList(CourseVo vo);
 
+    List<Course> list(CourseVo vo);
+
 }

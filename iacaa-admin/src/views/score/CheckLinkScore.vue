@@ -1,5 +1,5 @@
 <template>
-  <span style="">
+  <div style="padding: 25px">
    <el-form :inline="true" :model="serchForm" class="demo-form-inline" style="height: 50px">
       <el-form-item label="">
         <el-input v-model="serchForm.word" placeholder="课程名称" clearable />
@@ -28,61 +28,55 @@
       <el-table-column
         prop="image"
         label="简介"
-        width="600">
+        width="400">
       </el-table-column>
-<!--        <el-table-column prop="courseTasks" type="expand" label="课程目标" width="1000">-->
-<!--        <template slot-scope="courseScope">-->
-<!--          <el-table :data="courseScope.row.courseTasks" stripe>-->
-<!--            <el-table-column-->
-<!--              prop="year"-->
-<!--              label="年份"-->
-<!--              width="200"-->
-<!--            />-->
-<!--            <el-table-column-->
-<!--              prop="describes"-->
-<!--              label="课程目标描述"-->
-<!--              width="700"-->
-<!--            />-->
-<!--            <el-table-column-->
-<!--              prop="createdDate"-->
-<!--              label="创建时间"-->
-<!--              width="200"-->
-<!--            />-->
-<!--            <el-table-column-->
-<!--              prop="updateDate"-->
-<!--              label="最终更新时间"-->
-<!--              width="200"-->
-<!--            />-->
-<!--            <el-table-column label="操作"-->
-<!--                             prop="courseTasks">-->
-<!--              <template slot-scope="courseTaskScope">-->
-<!--                <el-button :disabled="courseScope.row.editStatus === 0" v-if="courseTaskScope.row.year === new Date().getFullYear()"-->
-<!--                           type="primary" icon="el-icon-edit" circle @click="handleCheckLinkEditForm(courseScope.row.name, courseTaskScope.row)" />-->
-<!--              </template>-->
-<!--            </el-table-column>-->
-<!--          </el-table>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-      <el-table-column
-        prop=""
-        label="操作"
-        width=""
-      >
-        <template slot-scope="scope">
-          <el-button type="primary" @click="inputScore()">录入成绩</el-button>
+        <el-table-column prop="courseTasks" type="expand" label="考核环节" width="1000">
+        <template slot-scope="courseScope">
+          <el-table :data="courseScope.row.checkLinks" stripe>
+            <el-table-column
+              prop="year"
+              label="年份"
+              width="200"
+            />
+            <el-table-column
+              prop="name"
+              label="考核环节"
+              width="500"
+            />
+            <el-table-column
+              prop="createdDate"
+              label="创建时间"
+              width="200"
+            />
+            <el-table-column
+              prop="updateDate"
+              label="最终更新时间"
+              width="200"
+            />
+            <el-table-column label="操作" prop="courseTasks">
+              <template slot-scope="checkLinkScope">
+                <el-button :disabled="courseScope.row.editStatus === 0" v-if="checkLinkScope.row.year === new Date().getFullYear()"
+                           type="primary" @click="handleCheckLinkEditForm(courseScope.row, checkLinkScope.row)" >编辑成绩</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog
-      title="课程成绩录入"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
-      width="30%"
+      :title="ckeckLinkEditForm.course.name +' '+ ckeckLinkEditForm.checkLink.name+' (目标总分：'+ckeckLinkEditForm.checkLink.targetScore+')'"
+      width="65%"
       center>
       <div>
         <el-form ref="ruleForm" :model="ckeckLinkEditForm" status-icon class="demo-ruleForm">
-          <el-form-item  prop="pass">
+          <span style="margin-left: 70%">
+            <el-button icon="el-icon-download" type="primary">下载导入模板</el-button>
+            <el-button icon="el-icon-upload2" type="primary">Excel导入成绩</el-button>
+          </span>
+          <el-form-item  prop="pass" style="padding: 0;margin: 0">
             <br>
             <el-table
               ref="multipleTable"
@@ -91,25 +85,46 @@
               tooltip-effect="dark">
             <el-table-column
               prop=""
-              label="考核环节"
-              width="240">
+              label="学号"
+              width="300">
             </el-table-column>
             <el-table-column
               prop=""
-              label="总分"
-              width="150">
+              label="成绩"
+              width="170">
             </el-table-column>
             <el-table-column
               prop=""
-              label="平均分">
+              label="成绩百分比"
+              width="170">
+            </el-table-column>
+            <el-table-column
+                prop=""
+                label="创建日期"
+                width="250">
+            </el-table-column>
+            <el-table-column
+                prop=""
+                label="更新日期">
             </el-table-column>
           </el-table>
+            <div v-for="(item,index) in ckeckLinkEditForm.stuScores" type="text" autocomplete="off">
+              <el-input type="text" autocomplete="off" v-model="item.stuno" style="width: 25%;margin-top: 2px"></el-input>
+              <el-input type="text" autocomplete="off" v-model="item.score" style="width: 15%;margin-top: 2px"></el-input>
+              <el-input type="text" autocomplete="off" v-if="item.createdDate" v-model="item.mixScore" disabled style="width: 15%;margin-top: 2px"></el-input>
+              <el-input type="text" autocomplete="off" v-if="item.createdDate" v-model="item.createdDate" disabled style="width: 20%;margin-top: 2px"></el-input>
+              <el-input type="text" autocomplete="off" v-if="item.createdDate" v-model="item.updateDate" disabled style="width: 20%;margin-top: 2px"></el-input>
+              <el-button type="danger" icon="el-icon-delete" circle @click="handleDeleteChecklink(index)"></el-button>
+            </div>
+            <div>
+              <el-button type="success" icon="el-icon-plus" plain @click="addAScore" style="margin-top: 20px">添加成绩</el-button>
+            </div>
           </el-form-item>
         </el-form>
       </div>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" style="margin-left: 80%">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitCheckLinksForm">确 定</el-button>
+        <el-button type="primary" @click="submitScores">确 定</el-button>
       </div>
     </el-dialog>
     <el-pagination
@@ -121,7 +136,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-  </span>
+  </div>
 
 </template>
 
@@ -143,9 +158,9 @@ export default {
         year: ''
       },
       ckeckLinkEditForm: {
-        courseName: '',
-        courseTask: {},
-        checkLinks: []
+        course: {},
+        checkLink: {},
+        stuScores: []
       }
     }
   },
@@ -153,8 +168,50 @@ export default {
     this.getCourseList()
   },
   methods:{
+    submitScores(){
+      requestByClient(supplierConsumer, 'POST', 'stuScore/saveOrUpdate', this.ckeckLinkEditForm.stuScores, res => {
+        if (res.data.succ) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          });
+          this.dialogVisible = false
+        }
+      })
+    },
+    addAScore(){
+      this.ckeckLinkEditForm.stuScores.push({stuno: '',score: '',checkLinkId: this.ckeckLinkEditForm.checkLink.id})
+    },
+    handleDeleteChecklink(index){
+      var checkLink = this.ckeckLinkEditForm.stuScores[index]
+      if (checkLink.id) {
+        this.$confirm('确定删除此条成绩?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          requestByClient(supplierConsumer, 'POST', 'stuScore/delete', {
+            id: checkLink.id
+          }, res => {
+            if (res.data.succ) {
+              this.$message({
+                message: '已删除',
+                type: 'success'
+              });
+            } else {
+              this.$message.error(res.data.msg);
+            }
+            this.loading = false
+          })
+          this.ckeckLinkEditForm.stuScores.splice(index, 1)
+        }).catch(() => {
+        });
+      } else {
+        this.ckeckLinkEditForm.stuScores.splice(index, 1)
+      }
+    },
     inputScore(){
-      requestByClient(supplierConsumer, 'POST', 'course/voList', {
+      requestByClient(supplierConsumer, 'POST', 'voList/voList', {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         word: this.serchForm.word
@@ -190,13 +247,13 @@ export default {
         }
       })
     },
-    handleCheckLinkEditForm(courseName, courseTask) {
+    handleCheckLinkEditForm(course, checkLink) {
       this.dialogVisible = true
-      this.ckeckLinkEditForm.courseTask = courseTask
-      this.ckeckLinkEditForm.courseName = courseName
-      requestByClient(supplierConsumer, 'POST', 'checkLink/list', {taskId: courseTask.id }, res => {
+      this.ckeckLinkEditForm.checkLink = checkLink
+      this.ckeckLinkEditForm.course = course
+      requestByClient(supplierConsumer, 'POST', 'stuScore/list', {checkLinkId: checkLink.id }, res => {
         if (res.data.succ) {
-          this.ckeckLinkEditForm.checkLinks = res.data.data
+          this.ckeckLinkEditForm.stuScores = res.data.data
         }
         this.loading = false
       })

@@ -1,5 +1,5 @@
 <template>
-  <span style="">
+  <div style="padding: 20px">
    <el-form :inline="true" :model="serchForm" class="demo-form-inline" style="height: 50px">
       <el-form-item label="">
         <el-input v-model="serchForm.word" placeholder="课程名称" clearable />
@@ -16,17 +16,18 @@
       tooltip-effect="dark"
     >
       <el-table-column
-        type="selection"
-        width="55"
-      />
-      <el-table-column
-        type="index"
-        label="序号"
-        width="100"
+        prop="id"
+        label="课程编号"
+        width="200"
       />
       <el-table-column
         prop="name"
         label="课程名称"
+        width="200"
+      />
+      <el-table-column
+        prop="image"
+        label="课程描述"
         width=""
       />
         <el-table-column prop="courseTasks" type="expand" label="课程目标" width="1000">
@@ -121,7 +122,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-  </span>
+  </div>
 
 </template>
 

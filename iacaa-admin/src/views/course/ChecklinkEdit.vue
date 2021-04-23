@@ -1,15 +1,11 @@
 <template>
-  <div>
+  <div style="padding: 20px">
     <el-table
       ref="multipleTable"
       :data="tableData"
       style="width: 100%"
       height="750"
       tooltip-effect="dark">
-      <el-table-column
-        type="index"
-        width="50">
-      </el-table-column>
       <el-table-column
         prop="id"
         label="课程编号"

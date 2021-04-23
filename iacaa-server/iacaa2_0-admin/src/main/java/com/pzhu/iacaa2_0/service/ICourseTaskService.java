@@ -19,7 +19,7 @@ public interface ICourseTaskService extends IService<CourseTask> {
 
     List<CourseTaskVo> voList(CourseTaskVo vo);
 
-    Boolean summaryCourseTask();
+    Boolean summaryCourseTask(Integer year);
 
     List<CourseTask> list(CourseTask courseTask);
 

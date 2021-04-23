@@ -55,7 +55,7 @@ public class CourseController{
     @RequestMapping("/adminList")
     @AuthResource(scope = "adminList", name = "admin课程列表")
     public ActionResult adminList(@RequestBody CourseVo vo) throws Exception{
-        List<Course> list = courseService.list();
+        List<Course> list = courseService.list(vo);
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);
     }

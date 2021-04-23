@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
@@ -95,21 +92,11 @@ public class CourseTaskController {
     @AuthResource(scope = "saveOrUpdate", name = "保存或更新课程目标列表")
     public ActionResult saveOrUpdate(@RequestBody List<CourseTaskVo> courseTasks){
         List<CourseTask> tasks = new ArrayList<>();
-        Map<String,Double> checkMap = new HashMap();
-        AtomicReference<Boolean> able = new AtomicReference<>(true);
+        Map<String,Double> checkMap = new HashMap<>();
+        AtomicBoolean able = new AtomicBoolean(true);
         courseTasks.forEach(i -> {
             String key = String.format("%S%S",i.getCourse().getId(),i.getTarget().getId());
-            if(checkMap.get(key) == null){
-                checkMap.put(key,i.getMix());
-            }else {
-                checkMap.put(key, i.getMix() + checkMap.get(key));
-                if(checkMap.get(key) > 1.000001D){
-                    able.set(false);
-                }
-                if(checkMap.get(key) < 0.000001D){
-                    able.set(false);
-                }
-            }
+            checkMap.merge(key, i.getMix(), Double::sum);
             CourseTask courseTask = new CourseTask();
             courseTask.setUpdateDate(LocalDateTime.now());
             if(i.getCourseId() != null){
@@ -124,17 +111,24 @@ public class CourseTaskController {
             courseTask.setYear(LocalDateTime.now().getYear());
             tasks.add(courseTask);
         });
+        Set<Map.Entry<String, Double>> entries = checkMap.entrySet();
+        entries.forEach(entrie -> {
+            if(entrie.getValue() > 1.0000001 || entrie.getValue() < 0.9999999d){
+                able.set(false);
+            }
+        });
+
         if(able.get()){
             boolean b = courseTaskService.saveOrUpdateBatch(tasks);
             return b ? ActionResult.ofSuccess() : ActionResult.ofFail(200,"更新失败");
         }else {
-            return ActionResult.ofFail(200,"所支撑单个指标点权重总和需小于1大于0");
+            return ActionResult.ofFail(200,"所支撑单个指标点权重总和需等于1");
         }
     }
 
     @RequestMapping("/summaryCourseTask")
     @AuthResource(scope = "summaryCourseTask", name = "同步课程目标成绩数据")
-    public ActionResult summaryCourseTask(){
-        return ActionResult.ofSuccess(courseTaskService.summaryCourseTask());
+    public ActionResult summaryCourseTask(@RequestBody CourseTask courseTask){
+        return ActionResult.ofSuccess(courseTaskService.summaryCourseTask(courseTask.getYear()));
     }
 }
