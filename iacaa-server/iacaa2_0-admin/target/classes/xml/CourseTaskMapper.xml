@@ -46,6 +46,10 @@
         WHERE id = #{courseTaskId} and id in (select distinct(course_task) from t_stu_evaluation)
     </update>
 
+    <update id="coverNullToZero">
+        UPDATE t_course_task set sys_grade = 0 WHERE isNULL(sys_grade)
+    </update>
+
     <select id="randomlist" resultMap="voMap">
         select
         <include refid="Base_Column_List"></include>
