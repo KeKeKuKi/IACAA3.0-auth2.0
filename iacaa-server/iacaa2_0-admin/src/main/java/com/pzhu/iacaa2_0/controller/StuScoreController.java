@@ -1,6 +1,8 @@
 package com.pzhu.iacaa2_0.controller;
 
 
+import com.gapache.security.annotation.AuthResource;
+import com.gapache.security.annotation.NeedAuth;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CheckLink;
 import com.pzhu.iacaa2_0.entity.StuScore;
@@ -27,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/stuScore")
+@NeedAuth("StuScore")
 public class StuScoreController {
     @Autowired
     IStuScoreService stuScoreService;
@@ -35,18 +38,21 @@ public class StuScoreController {
     ICheckLinkService checkLinkService;
 
     @RequestMapping("list")
+    @AuthResource(scope = "list", name = "学生成绩列表")
     public ActionResult list(@RequestBody StuScore stuScore){
         List<StuScore> stuScoreList = stuScoreService.list(stuScore);
         return ActionResult.ofSuccess(stuScoreList);
     }
 
     @RequestMapping("delete")
+    @AuthResource(scope = "delete", name = "删除学生成绩")
     public ActionResult delete(@RequestBody StuScore stuScore){
         stuScoreService.removeById(stuScore.getId());
         return ActionResult.ofSuccess();
     }
 
     @RequestMapping("saveOrUpdate")
+    @AuthResource(scope = "saveOrUpdate", name = "保存或更新学生成绩列表")
     public ActionResult saveOrUpdate(@RequestBody List<StuScore> stuScoreList){
         if(stuScoreList.isEmpty()){
             return ActionResult.ofFail("不能为空数据");

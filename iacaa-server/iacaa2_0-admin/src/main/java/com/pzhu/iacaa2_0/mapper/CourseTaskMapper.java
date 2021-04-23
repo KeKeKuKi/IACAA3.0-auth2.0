@@ -26,4 +26,6 @@ public interface CourseTaskMapper extends BaseMapper<CourseTask> {
     List<CourseTaskVo> randomlist(@Param("courseTask") CourseTask courseTask,@Param("randomSize") int randomSize);
 
     Boolean summaryStuScore(Long courseTaskId);
+
+    void coverNullToZero();
 }

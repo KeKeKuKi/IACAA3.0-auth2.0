@@ -1,6 +1,7 @@
 package com.pzhu.iacaa2_0.controller;
 
 
+import com.gapache.security.annotation.AuthResource;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entity.StuEvaluation;
@@ -57,7 +58,7 @@ public class StuEvaluationController {
     @RequestMapping("saveAll")
     public ActionResult saveAll (@RequestBody EvaluationsList evaluationsList, HttpServletRequest request) throws InterruptedException {
         // 为了让用户觉得系统很牛，加载一会儿
-        Thread.sleep(500);
+//        Thread.sleep(300);
 
         List<StuEvaluation> stuEvaluations = evaluationsList.getStuEvaluations();
         stuEvaluations.forEach(i -> {

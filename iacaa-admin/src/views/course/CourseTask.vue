@@ -206,7 +206,7 @@ export default {
         if (res.data.succ) {
           if(res.data.data.length === 0){
             this.$message({
-              message: '课程暂未支撑任何指标表',
+              message: '课程暂未支撑任何指标点',
               type: 'warning'
             });
             this.dialogVisible = false

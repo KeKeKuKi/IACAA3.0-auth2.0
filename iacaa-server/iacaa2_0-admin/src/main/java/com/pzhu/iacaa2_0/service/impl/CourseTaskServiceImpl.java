@@ -45,6 +45,7 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
             checkLinkService.summaryByCourseTaskID(i.getId(),year);
             baseMapper.summaryStuScore(i.getId());
         });
+        baseMapper.coverNullToZero();
         return true;
     }
 
