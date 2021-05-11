@@ -133,6 +133,7 @@ export default {
   name: "CheckLinks",
   data(){
     return{
+      year: 2021,
       dialogVisible: false,
       pageSize: 20,
       total: 0,
@@ -173,7 +174,8 @@ export default {
       this.ckeckLinkEditForm.courseTask = courseTask
       this.ckeckLinkEditForm.courseName = course.name
       requestByClient(supplierConsumer, 'POST', 'checkLink/list', {
-        courseId: course.id
+        courseId: course.id,
+        year: this.year
       }, res => {
         if (res.data.succ) {
           this.ckeckLinkEditForm.ableCheckLinks = res.data.data

@@ -18,4 +18,6 @@ public interface StuScoreMapper extends BaseMapper<StuScore> {
     List<StuScore> list(StuScore stuScore);
 
     int summaryByCheckLinkId(Long id);
+
+    Boolean summaryCheckLinkScoreById(Long id);
 }

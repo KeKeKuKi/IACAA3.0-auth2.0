@@ -4,7 +4,7 @@ import { Message } from 'element-ui'
 import router from '@/router'
 import store from "@/store";
 
-const devServer = 'http://106.52.162.34:19999/'
+const devServer = 'http://127.0.0.1:19999/'
 // const devServer = 'http://dev.51ishare.com:8182/'
 export const supplierConsumer = axios.create({
   baseURL: devServer + 'Iacaa20Server',
@@ -44,7 +44,6 @@ supplierConsumer.interceptors.response.use(response => {
 // //业务系统请求全局拦截器
 // supplierConsumer.interceptors.request.use(request => {
 //   //设置请求方式为application/x-www-form-urlencoded后台参数容易获取
-//
 //   return request
 // })
 

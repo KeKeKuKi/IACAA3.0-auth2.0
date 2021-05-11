@@ -100,6 +100,7 @@ export default {
   },
   data() {
     return {
+      year: 2021,
       dialogVisible: false,
       visible: false,
       tableData: [],
@@ -161,7 +162,8 @@ export default {
     },
     handleEditForm(course) {
       requestByClient(supplierConsumer, 'POST', 'checkLink/list', {
-        courseId: course.id
+        courseId: course.id,
+        year: this.year
       }, res => {
         if (res.data.succ) {
           this.editingForm.editingCourse = course

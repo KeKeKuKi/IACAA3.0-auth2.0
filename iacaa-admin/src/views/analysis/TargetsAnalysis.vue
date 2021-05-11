@@ -152,7 +152,7 @@ export default {
           barGap: 0,
           itemStyle: {
             normal: {
-              color: '#c9084c'
+              color: '#ff0962'
             }
           },
           showBackground: true,
@@ -175,7 +175,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#1f3cf1'
+              color: '#1752e8'
             }
           },
           showBackground: true,

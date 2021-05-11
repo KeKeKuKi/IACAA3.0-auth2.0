@@ -6,14 +6,18 @@ import com.gapache.security.annotation.AuthResource;
 import com.gapache.security.annotation.NeedAuth;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.*;
+import com.pzhu.iacaa2_0.entityVo.CheckLinkVo;
 import com.pzhu.iacaa2_0.entityVo.GradRequirementVo;
 import com.pzhu.iacaa2_0.entityVo.IdsVo;
 import com.pzhu.iacaa2_0.entityVo.TargetVo;
+import com.pzhu.iacaa2_0.mapper.StuScoreMapper;
 import com.pzhu.iacaa2_0.service.*;
+import com.pzhu.iacaa2_0.utils.FileUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +52,9 @@ public class GradRequirementController{
     ITargetService targetService;
 
     @Autowired
+    ICourseService courseService;
+
+    @Autowired
     ICourseTargetService courseTargetService;
 
     @Autowired
@@ -55,6 +62,12 @@ public class GradRequirementController{
 
     @Autowired
     ICheckLinkService checkLinkService;
+
+    @Autowired
+    ICourseTaskCheckLinkService courseTaskCheckLinkService;
+
+    @Autowired
+    IStuScoreService stuScoreService;
 
     @RequestMapping("/list")
     @AuthResource(scope = "list", name = "毕业要求列表")
@@ -150,27 +163,8 @@ public class GradRequirementController{
 
     @RequestMapping("/exportTemplate")
     @AuthResource(scope = "exportTemplate", name = "导出模板")
-    public void exportTemplate(HttpServletResponse response, HttpServletRequest request) throws IOException {
-        File file = new File("D:/doc/" + "import" + ".xlsx");
-        if (!file.exists()) {
-            throw new IOException(file.getPath() + "文件不存在！");
-        }
-        InputStream fis = null;
-        fis = new BufferedInputStream(new FileInputStream(file));
-        byte[] buffer = new byte[fis.available()];
-        fis.read(buffer);
-        fis.close();
-        response.reset();
-        response.setContentType("application/octet-stream");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("指标点模板" + ".xlsx", "UTF-8"));
-        OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-        toClient.write(buffer);
-        toClient.flush();
-        toClient.close();
-        fis.close();
+    public void exportTemplate(HttpServletResponse response) throws IOException {
+        FileUtils.download("D:/doc/","import.xlsx",response);
     }
 
     @RequestMapping("/summaryAll")
@@ -180,107 +174,145 @@ public class GradRequirementController{
         return aBoolean ? ActionResult.ofSuccess() : ActionResult.ofFail("统计失败");
     }
 
-//    @RequestMapping("/randData")
-////    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
-//    public void randData() {
-//        NumberFormat nf = NumberFormat.getNumberInstance();
-//        nf.setMaximumFractionDigits(2);
-//        for (int year = 2019; year < 2022; year++) {
-//            GradRequirementVo vo = new GradRequirementVo();
-//            vo.setYear(year);
-//            List<GradRequirement> list = gradRequirementService.list(vo);
-//            int finalYear = year;
-//            list.forEach(req -> {
-//                int count = (int)((Math.random()) * 3 + 2);
-//                List<Target> targets = new ArrayList<>();
-//                for (int i = 0; i < count; i++) {
-//                    Target target = new Target();
-//                    target.setYear(finalYear);
-//                    target.setReqId(req.getId().intValue());
-//                    target.setDiscribe("指标点描述指标点描述指标点描述指标点描述");
-//                    targets.add(target);
-//                    target.setCreatedDate(LocalDateTime.now());
-//                    target.setUpdateDate(LocalDateTime.now());
-//                }
-//                targets.forEach(target -> {
-//                    targetService.save(target);
-//                });
-//            });
-//
-//            TargetVo query = new TargetVo();
-//            query.setYear(year);
-//            List<Target> list1 = targetService.list(query);
-//            int finalYear1 = year;
-//            list1.forEach(target -> {
-//                List<CourseTarget> courseTargets = new ArrayList<>();
-//                Double allMix = 1D;
-//                long courseId = (long)(Math.random() * 49 + 1);
-//                while (allMix > 0.1){
-//                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.1));
-//                    CourseTarget courseTarget = new CourseTarget();
-//                    courseTarget.setTargetId(target.getId());
-//                    courseTarget.setCourseId(courseId%50+1);
-//                    courseTarget.setCreatedDate(LocalDateTime.now());
-//                    courseTarget.setUpdateDate(LocalDateTime.now());
-//                    if(allMix - mix > 0.1){
-//                        allMix -= mix;
-//                        courseTarget.setMix(mix);
-//                    }else {
-//                        courseTarget.setMix(Double.parseDouble(nf.format(allMix)));
-//                        allMix -= mix;
-//                    }
-//                    courseTargets.add(courseTarget);
-//                    List<CourseTask> courseTasks = new ArrayList<>();
-//                    Double allMix2 = 1D;
-//                    while (allMix2 > 0.1){
-//                        double mix2 = Double.parseDouble(nf.format(Math.random()/2 + 0.3));
-//                        CourseTask courseTask = new CourseTask();
-//                        courseTask.setYear(finalYear1);
-//                        courseTask.setCourseId((int)courseId%50+1);
-//                        courseTask.setDescribes("某课程目标的描述某课程目标的描述某课程目标的描述");
-//                        courseTask.setCreatedDate(LocalDateTime.now());
-//                        courseTask.setUpdateDate(LocalDateTime.now());
-//                        courseTask.setTargetId(target.getId().intValue());
-//                        if(allMix2 - mix2 > 0.1){
-//                            courseTask.setMix(mix2);
-//                            allMix2 -= mix2;
-//                        }else {
-//                            courseTask.setMix(Double.parseDouble(nf.format(allMix2)));
-//                            allMix2 -= mix2;
-//                        }
-//                        courseTasks.add(courseTask);
-//                    }
-//                    courseTaskService.saveBatch(courseTasks);
-//                    courseId += (Math.random() * 6 + 1);
-//                }
-//                courseTargetService.saveBatch(courseTargets);
-//            });
-//        }
-//        List<CourseTask> tasks = courseTaskService.list();
-//        tasks.forEach(courseTask -> {
-//            List<CheckLink> checkLinks = new ArrayList<>();
-//            Double allMix = 1D;
-//            while (allMix > 0.1){
-//                double mix = Double.parseDouble(nf.format(Math.random()/3 + 0.1));
-//                CheckLink checkLink = new CheckLink();
-//                checkLink.setCreatedDate(LocalDateTime.now());
-//                checkLink.setUpdateDate(LocalDateTime.now());
-//                checkLink.setTargetScore(100D);
-//                checkLink.setName("某考核环节");
-//                checkLink.setAverageScore((int)(Math.random()*50) + 50d);
-//                checkLink.setTaskId(courseTask.getId().intValue());
-//                if(allMix - mix > 0.1){
-//                    checkLink.setMix(mix);
-//                    allMix -= mix;
-//                }else {
-//                    checkLink.setMix(Double.parseDouble(nf.format(allMix)));
-//                    allMix -= mix;
-//                }
-//                checkLinks.add(checkLink);
-//            }
-//            checkLinkService.saveBatch(checkLinks);
-//        });
-//    }
+    @Transactional
+    @RequestMapping("/randData")
+//    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
+    public void randData() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
+        for (int year = 2019; year < 2022; year++) {
+            GradRequirementVo vo = new GradRequirementVo();
+            vo.setYear(year);
+            List<GradRequirement> list = gradRequirementService.list(vo);
+            int finalYear = year;
+            list.forEach(req -> {
+                int count = (int)((Math.random()) * 3 + 2);
+                List<Target> targets = new ArrayList<>();
+                for (int i = 0; i < count; i++) {
+                    Target target = new Target();
+                    target.setYear(finalYear);
+                    target.setReqId(req.getId().intValue());
+                    target.setDiscribe(req.getName()+"的指标点"+i);
+                    targets.add(target);
+                    target.setCreatedDate(LocalDateTime.now());
+                    target.setUpdateDate(LocalDateTime.now());
+                }
+                targets.forEach(target -> {
+                    targetService.save(target);
+                });
+            });
+
+            TargetVo query = new TargetVo();
+            query.setYear(year);
+            List<Target> list1 = targetService.list(query);
+            int finalYear1 = year;
+            list1.forEach(target -> {
+                List<CourseTarget> courseTargets = new ArrayList<>();
+                Double allMix = 1D;
+                long courseId = (long)(Math.random() * 49 + 1);
+                while (allMix > 0.1){
+                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.1));
+                    CourseTarget courseTarget = new CourseTarget();
+                    courseTarget.setTargetId(target.getId());
+                    courseTarget.setCourseId(courseId%50+1);
+                    courseTarget.setCreatedDate(LocalDateTime.now());
+                    courseTarget.setUpdateDate(LocalDateTime.now());
+                    if(allMix - mix > 0.1){
+                        allMix -= mix;
+                        courseTarget.setMix(mix);
+                    }else {
+                        courseTarget.setMix(Double.parseDouble(nf.format(allMix)));
+                        allMix -= mix;
+                    }
+                    courseTargets.add(courseTarget);
+                    List<CourseTask> courseTasks = new ArrayList<>();
+                    Double allMix2 = 1D;
+                    int j = 1;
+                    while (allMix2 > 0.1){
+                        double mix2 = Double.parseDouble(nf.format(Math.random()/2 + 0.3));
+                        CourseTask courseTask = new CourseTask();
+                        courseTask.setYear(finalYear1);
+                        courseTask.setCourseId((int)courseId%50+1);
+                        courseTask.setDescribes("支撑指标点"+target.getId()+"的课程目标"+j++);
+                        courseTask.setCreatedDate(LocalDateTime.now());
+                        courseTask.setUpdateDate(LocalDateTime.now());
+                        courseTask.setTargetId(target.getId().intValue());
+                        if(allMix2 - mix2 > 0.1){
+                            courseTask.setMix(mix2);
+                            allMix2 -= mix2;
+                        }else {
+                            courseTask.setMix(Double.parseDouble(nf.format(allMix2)));
+                            allMix2 -= mix2;
+                        }
+                        courseTasks.add(courseTask);
+                    }
+                    courseTaskService.saveBatch(courseTasks);
+                    courseId += (Math.random() * 6 + 1);
+                }
+                courseTargetService.saveBatch(courseTargets);
+            });
+            List<Course> courses = courseService.list();
+            int finalYear2 = year;
+            courses.forEach(course -> {
+                List<CheckLink> checkLinks = new ArrayList<>();
+                double allMix = 1D;
+                int j = 1;
+                while (allMix > 0.1){
+                    double mix = Double.parseDouble(nf.format(Math.random()/3 + 0.1));
+                    CheckLink checkLink = new CheckLink();
+                    checkLink.setYear(finalYear2);
+                    checkLink.setCreatedDate(LocalDateTime.now());
+                    checkLink.setUpdateDate(LocalDateTime.now());
+                    checkLink.setTargetScore(100D);
+                    checkLink.setName(""+ finalYear2 + "" + course.getName() + "的考核环节" + j++);
+                    checkLink.setAverageScore((int)(Math.random()*50) + 50d);
+                    checkLink.setCourseId(course.getId());
+                    allMix -= mix;
+                    checkLinks.add(checkLink);
+                }
+                checkLinkService.saveBatch(checkLinks);
+            });
+
+            CourseTask courseTask = new CourseTask();
+            courseTask.setYear(year);
+            List<CourseTask> courseTasks = courseTaskService.list(courseTask);
+            int finalYear3 = year;
+            courseTasks.forEach(i -> {
+                CheckLinkVo checkLinkVo = new CheckLinkVo();
+                checkLinkVo.setCourseId(i.getCourseId().longValue());
+                checkLinkVo.setYear(finalYear3);
+                List<CheckLink> checkLinks1 = checkLinkService.list(checkLinkVo);
+                List<CourseTaskCheckLink> checkLinks = new ArrayList<>();
+                double allMix = 1D;
+                int j = 1;
+                while (allMix > 0.1){
+                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.1));
+                    CourseTaskCheckLink checkLink = new CourseTaskCheckLink();
+                    checkLink.setCreatedDate(LocalDateTime.now());
+                    checkLink.setUpdateDate(LocalDateTime.now());
+                    checkLink.setCourseTaskId(i.getId().intValue());
+                    checkLink.setCheckLinkId(checkLinks1.get(j++%checkLinks1.size()).getId().intValue());
+                    if(allMix - mix > 0.1){
+                        checkLink.setMix(mix);
+                        allMix -= mix;
+                    }else {
+                        checkLink.setMix(Double.parseDouble(nf.format(allMix)));
+                        allMix -= mix;
+                    }
+                    checkLinks.add(checkLink);
+                }
+                courseTaskCheckLinkService.saveBatch(checkLinks);
+            });
+        }
+
+        List<CheckLink> list = checkLinkService.list();
+        list.forEach(i -> {
+            i.setAverageScore(Math.random()*40 + 60);
+        });
+
+        checkLinkService.saveBatch(list);
+
+    }
 
 //    private String getString(){
 //        int count = (int)((Math.random()) * 30 + 12);

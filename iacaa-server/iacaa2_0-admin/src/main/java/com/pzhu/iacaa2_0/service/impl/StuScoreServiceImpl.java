@@ -37,11 +37,15 @@ public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> i
         CheckLinkVo vo = new CheckLinkVo();
         vo.setYear(year);
         List<CheckLink> list = checkLinkService.list(vo);
-
         list.forEach(checkLink -> {
             baseMapper.summaryByCheckLinkId(checkLink.getId());
         });
         checkLinkService.coverNullToZero();
         return null;
+    }
+
+    @Override
+    public Boolean summaryCheckLinkScoreById(Long id) {
+        return baseMapper.summaryCheckLinkScoreById(id);
     }
 }

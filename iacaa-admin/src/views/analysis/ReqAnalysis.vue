@@ -130,7 +130,7 @@ export default {
           barGap: 0,
           itemStyle: {
             normal: {
-              color: '#1d5fac'
+              color: '#0066ff'
             }
           },
           showBackground: true,
@@ -143,7 +143,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#b41d52'
+              color: '#ff0033'
             }
           },
           showBackground: true,
@@ -254,7 +254,7 @@ export default {
           barGap: 0,
           itemStyle: {
             normal: {
-              color: '#b80048'
+              color: '#ff2469'
             }
           },
           showBackground: true,
@@ -277,7 +277,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#3003ac'
+              color: '#1847ff'
             }
           },
           showBackground: true,

@@ -12,6 +12,6 @@ import java.util.List;
 @Data
 public class CourseVo extends Course {
     private String word;
-    List<CourseTask> courseTasks;
-    List<CheckLink> checkLinks;
+    private List<CourseTask> courseTasks;
+    private List<CheckLink> checkLinks;
 }

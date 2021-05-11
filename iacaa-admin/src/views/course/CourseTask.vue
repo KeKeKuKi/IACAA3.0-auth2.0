@@ -33,6 +33,7 @@
     <el-table-column label="操作" >
       <template slot-scope="scope">
         <el-button type="primary" :disabled="scope.row.editStatus === 0" @click="handleEditForm(scope.row)">编辑课程目标</el-button>
+        <el-button type="primary" :disabled="scope.row.editStatus === 0" @click="handleEditForm(scope.row)">发布课程问卷</el-button>
       </template>
     </el-table-column>
   </el-table>

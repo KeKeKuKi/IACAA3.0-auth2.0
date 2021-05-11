@@ -142,6 +142,8 @@
 <script>
 import { requestByClient } from '@/utils/HttpUtils'
 import { supplierConsumer } from '@/utils/HttpUtils'
+import axios from 'axios'
+import {getToken} from "@/utils/auth";
 export default {
   name: 'GradRequirementEdit',
   data() {
@@ -309,20 +311,24 @@ export default {
       }
     },
     exportTemplate() {
-      requestByClient(supplierConsumer, 'POST','gradRequirement/exportTemplate', {
-        responseType: 'blob'
-      },res => {
+      let baseURL = supplierConsumer.defaults.baseURL
+      axios.post(baseURL + '/stuScore/exportTemplate',{},{
+        responseType:  'blob',
+        headers:{
+          '_token': getToken()
+        }
+      }).then(res => {
         const blob = new Blob([res.data], {
           type: 'application/vnd.ms-excel'
         })
         const objectUrl = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = objectUrl
-        a.download = new Date().getFullYear() + '年度毕业要求导入模板'
+        a.download = '导入模板.xlsx'
         // a.click();
         // 下面这个写法兼容火狐
         a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }))
-        window.URL.revokeObjectURL(blob)
+        window.URL.revokeObjectURL(objectUrl)
       })
     }
   }

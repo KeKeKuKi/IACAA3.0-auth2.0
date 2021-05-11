@@ -183,7 +183,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#b8004c'
+              color: '#ff1272'
             }
           },
           showBackground: true,
@@ -206,7 +206,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#002892'
+              color: '#0e4fff'
             }
           },
           showBackground: true,

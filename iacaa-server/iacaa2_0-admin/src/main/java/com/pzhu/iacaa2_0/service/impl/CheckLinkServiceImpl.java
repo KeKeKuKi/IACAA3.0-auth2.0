@@ -33,7 +33,7 @@ public class CheckLinkServiceImpl extends ServiceImpl<CheckLinkMapper, CheckLink
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Boolean summaryByCourseTaskID(Long id,Integer year) {
-        stuScoreService.summaryAllCheckLinksScore(year);
+//        stuScoreService.summaryAllCheckLinksScore(year);
         return baseMapper.summaryByCourseTaskId(id) >= 0;
     }
 
