@@ -129,7 +129,6 @@ public class GradRequirementController{
             if (i.getId() == null) {
                 i.setCreatedDate(LocalDateTime.now());
             }
-            i.setYear(LocalDate.now().getYear());
             i.setUpdateDate(LocalDateTime.now());
         });
         targetService.saveOrUpdateBatch(targets);
@@ -143,9 +142,6 @@ public class GradRequirementController{
     @RequestMapping("/save")
     @AuthResource(scope = "save", name = "保存毕业要求")
     public ActionResult save(@RequestBody GradRequirement gradRequirement) {
-        if (gradRequirement.getYear() == null) {
-            gradRequirement.setYear(LocalDate.now().getYear());
-        }
         gradRequirement.setCreatedDate(LocalDateTime.now());
         gradRequirement.setUpdateDate(LocalDateTime.now());
         boolean update = gradRequirementService.save(gradRequirement);

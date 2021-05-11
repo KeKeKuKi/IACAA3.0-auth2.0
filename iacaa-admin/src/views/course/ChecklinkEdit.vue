@@ -23,8 +23,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" :disabled="scope.row.editStatus === 0" @click="handleEditForm(scope.row)">编辑课程考核环节
-          </el-button>
+          <el-button type="primary" :disabled="scope.row.editStatus === 0" @click="handleEditForm(scope.row)">编辑课程考核环节</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -100,7 +99,7 @@ export default {
   },
   data() {
     return {
-      year: 2021,
+      year: localStorage.getItem('editYear'),
       dialogVisible: false,
       visible: false,
       tableData: [],
@@ -130,7 +129,7 @@ export default {
       })
     },
     handleAddChecklink() {
-      this.editingForm.checkLinks.push({name: '', targetScore: 0, courseId: this.editingForm.editingCourse.id})
+      this.editingForm.checkLinks.push({year: localStorage.getItem('editYear'), name: '', targetScore: 0, courseId: this.editingForm.editingCourse.id})
     },
     handleDeleteChecklink(index) {
       var checkLink = this.editingForm.checkLinks[index]
@@ -163,7 +162,7 @@ export default {
     handleEditForm(course) {
       requestByClient(supplierConsumer, 'POST', 'checkLink/list', {
         courseId: course.id,
-        year: this.year
+        year: localStorage.getItem('editYear')
       }, res => {
         if (res.data.succ) {
           this.editingForm.editingCourse = course

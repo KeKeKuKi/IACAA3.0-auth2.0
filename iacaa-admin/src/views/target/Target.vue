@@ -4,16 +4,6 @@
       <el-form-item label="">
         <el-input v-model="serchForm.word" placeholder="标题/描述" clearable />
       </el-form-item>
-      <el-form-item label="">
-        <el-select v-model="serchForm.year" placeholder="年份" clearable>
-          <el-option label="2016" value="2016" />
-          <el-option label="2017" value="2017" />
-          <el-option label="2018" value="2018" />
-          <el-option label="2019" value="2019" />
-          <el-option label="2020" value="2020" />
-          <el-option label="2021" value="2021" />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getReqList">查询</el-button>
       </el-form-item>
@@ -60,7 +50,7 @@
             />
             <el-table-column label="操作">
               <template slot-scope="scope1">
-                <el-button v-if="scope.row.year === new Date().getFullYear()" type="primary" icon="el-icon-edit" circle @click="handleTargetEditForm(scope1.row,scope.row.name)" />
+                <el-button type="primary" icon="el-icon-edit" circle @click="handleTargetEditForm(scope1.row,scope.row.name)" />
               </template>
             </el-table-column>
           </el-table>
@@ -129,7 +119,7 @@ export default {
       currentPage: 1,
       serchForm: {
         word: '',
-        year: ''
+        year: localStorage.getItem('editYear')
       },
       editForm: {
         id: '',

@@ -86,9 +86,6 @@ public class TargetController {
     @RequestMapping("/save")
     @AuthResource(scope = "save", name = "保存单个指标点")
     public ActionResult save(@RequestBody Target target){
-        if(target.getYear() == null){
-            target.setYear(LocalDate.now().getYear());
-        }
         target.setCreatedDate(LocalDateTime.now());
         target.setUpdateDate(LocalDateTime.now());
         boolean update = targetService.save(target);

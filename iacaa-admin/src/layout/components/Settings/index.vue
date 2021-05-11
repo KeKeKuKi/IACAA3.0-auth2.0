@@ -1,25 +1,30 @@
 <template>
   <div class="drawer-container">
     <div>
-      <h3 class="drawer-title">Page style setting</h3>
+      <h3 class="drawer-title">系统设置</h3>
 
       <div class="drawer-item">
-        <span>Theme Color</span>
+        <span>系统编辑年份</span>
+        <el-input-number v-model="year" :min="2000" :max="new Date().getFullYear()+20" @change="setYear" label="年份"></el-input-number>
+      </div>
+
+      <div class="drawer-item">
+        <span>主题颜色</span>
         <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
       </div>
 
       <div class="drawer-item">
-        <span>Open Tags-View</span>
+        <span>打开Tag视图</span>
         <el-switch v-model="tagsView" class="drawer-switch" />
       </div>
 
-      <div class="drawer-item">
-        <span>Fixed Header</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch" />
-      </div>
+<!--      <div class="drawer-item">-->
+<!--        <span>Fixed Header</span>-->
+<!--        <el-switch v-model="fixedHeader" class="drawer-switch" />-->
+<!--      </div>-->
 
       <div class="drawer-item">
-        <span>Sidebar Logo</span>
+        <span>显示Logo</span>
         <el-switch v-model="sidebarLogo" class="drawer-switch" />
       </div>
 
@@ -33,7 +38,9 @@ import ThemePicker from '@/components/ThemePicker'
 export default {
   components: { ThemePicker },
   data() {
-    return {}
+    return {
+      year: localStorage.getItem('editYear') ? localStorage.getItem('editYear') : new Date().getFullYear()
+    }
   },
   computed: {
     fixedHeader: {
@@ -76,6 +83,9 @@ export default {
         key: 'theme',
         value: val
       })
+    },
+    setYear(){
+      localStorage.setItem('editYear', this.year)
     }
   }
 }

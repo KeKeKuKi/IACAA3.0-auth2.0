@@ -274,7 +274,7 @@ $light_gray: #ffffff;
     max-width: 100%;
     padding: 160px 35px 0;
     margin-top: 8%;
-    margin-left: 40%;
+    margin-left: 37%;
     overflow: hidden;
   }
 

@@ -73,7 +73,6 @@ public class CheckLinkController {
             }
             if(i.getId() == null){
                 i.setCreatedDate(LocalDateTime.now());
-                i.setYear(LocalDateTime.now().getYear());
             }
             i.setUpdateDate(LocalDateTime.now());
         });
