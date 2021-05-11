@@ -174,13 +174,7 @@ export const asyncRoutes = [
         path: 'CheckLinkScore',
         component: () => import('@/views/score/CheckLinkScore'),
         name: 'CheckLinkScore',
-        meta: { title: '录入成绩', icon: 'list', affix: true }
-      },
-      {
-        path: 'ScoreShow',
-        component: () => import('@/views/score/ScoreShow'),
-        name: 'ScoreShow',
-        meta: { title: '查看成绩', icon: 'chart', affix: true }
+        meta: { title: '成绩管理', icon: 'list', affix: true }
       }
     ]
   },

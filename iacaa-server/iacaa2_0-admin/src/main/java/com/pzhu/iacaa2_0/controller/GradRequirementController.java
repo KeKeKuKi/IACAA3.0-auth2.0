@@ -1,5 +1,6 @@
 package com.pzhu.iacaa2_0.controller;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gapache.security.annotation.AuthResource;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +70,9 @@ public class GradRequirementController{
 
     @Autowired
     IStuScoreService stuScoreService;
+
+    @Autowired
+    IStuEvaluationService stuEvaluationService;
 
     @RequestMapping("/list")
     @AuthResource(scope = "list", name = "毕业要求列表")
@@ -178,6 +183,27 @@ public class GradRequirementController{
     @RequestMapping("/randData")
 //    @AuthResource(scope = "randData", name = "生成三年随机数据（慎用）")
     public void randData() {
+        Wrapper<Target> wrapper = new QueryWrapper<>();
+        targetService.remove(wrapper);
+
+        Wrapper<CourseTarget> wrapper1 = new QueryWrapper<>();
+        courseTargetService.remove(wrapper1);
+
+        Wrapper<CourseTask> wrapper2 = new QueryWrapper<>();
+        courseTaskService.remove(wrapper2);
+
+        Wrapper<CheckLink> wrapper3 = new QueryWrapper<>();
+        checkLinkService.remove(wrapper3);
+
+        Wrapper<CourseTaskCheckLink> wrapper4 = new QueryWrapper<>();
+        courseTaskCheckLinkService.remove(wrapper4);
+
+        Wrapper<StuEvaluation> wrapper5 = new QueryWrapper<>();
+        stuEvaluationService.remove(wrapper5);
+
+        Wrapper<StuScore> wrapper6 = new QueryWrapper<>();
+        stuScoreService.remove(wrapper6);
+
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
         for (int year = 2019; year < 2022; year++) {
@@ -193,9 +219,9 @@ public class GradRequirementController{
                     target.setYear(finalYear);
                     target.setReqId(req.getId().intValue());
                     target.setDiscribe(req.getName()+"的指标点"+i);
-                    targets.add(target);
                     target.setCreatedDate(LocalDateTime.now());
                     target.setUpdateDate(LocalDateTime.now());
+                    targets.add(target);
                 }
                 targets.forEach(target -> {
                     targetService.save(target);
@@ -233,7 +259,7 @@ public class GradRequirementController{
                         CourseTask courseTask = new CourseTask();
                         courseTask.setYear(finalYear1);
                         courseTask.setCourseId((int)courseId%50+1);
-                        courseTask.setDescribes("支撑指标点"+target.getId()+"的课程目标"+j++);
+                        courseTask.setDescribes("支撑"+target.getId()+"的课程目标"+j++);
                         courseTask.setCreatedDate(LocalDateTime.now());
                         courseTask.setUpdateDate(LocalDateTime.now());
                         courseTask.setTargetId(target.getId().intValue());
@@ -264,8 +290,9 @@ public class GradRequirementController{
                     checkLink.setCreatedDate(LocalDateTime.now());
                     checkLink.setUpdateDate(LocalDateTime.now());
                     checkLink.setTargetScore(100D);
-                    checkLink.setName(""+ finalYear2 + "" + course.getName() + "的考核环节" + j++);
-                    checkLink.setAverageScore((int)(Math.random()*50) + 50d);
+                    checkLink.setAverageScore(Math.random()*80 + 20);
+                    checkLink.setName(""+ finalYear2 + "" + "考核环节" + j++);
+                    checkLink.setAverageScore((int)(Math.random()*80) + 20d);
                     checkLink.setCourseId(course.getId());
                     allMix -= mix;
                     checkLinks.add(checkLink);
@@ -284,9 +311,9 @@ public class GradRequirementController{
                 List<CheckLink> checkLinks1 = checkLinkService.list(checkLinkVo);
                 List<CourseTaskCheckLink> checkLinks = new ArrayList<>();
                 double allMix = 1D;
-                int j = 1;
+                int j = 0;
                 while (allMix > 0.1){
-                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.1));
+                    double mix = Double.parseDouble(nf.format(Math.random()/2 + 0.2));
                     CourseTaskCheckLink checkLink = new CourseTaskCheckLink();
                     checkLink.setCreatedDate(LocalDateTime.now());
                     checkLink.setUpdateDate(LocalDateTime.now());
@@ -303,16 +330,46 @@ public class GradRequirementController{
                 }
                 courseTaskCheckLinkService.saveBatch(checkLinks);
             });
+
+
+            GradRequirement gradRequirement = new GradRequirement();
+            gradRequirement.setYear(year);
+
+            this.summaryAll(gradRequirement);
         }
 
+        List<CourseTask> list11 = courseTaskService.list();
+        List<StuEvaluation> stuEvaluations = new ArrayList<>(10000);
+        for (int i = 0; i < 10000; i++) {
+            StuEvaluation stuEvaluation = new StuEvaluation();
+            String s = UUID.randomUUID().toString();
+            stuEvaluation.setStuNo(s.substring(0,13));
+            stuEvaluation.setScore((double)((int)(Math.random()*5))+1);
+            stuEvaluation.setCourseTask(list11.get((int)(Math.random()*list11.size()-2 + 1)).getId().intValue());
+            stuEvaluation.setCreatedDate(LocalDateTime.now());
+            stuEvaluation.setUpdateDate(LocalDateTime.now());
+            stuEvaluations.add(stuEvaluation);
+        }
+        stuEvaluationService.saveBatch(stuEvaluations);
+
         List<CheckLink> list = checkLinkService.list();
+        List<StuScore> stuScoreList = new ArrayList<>(50);
         list.forEach(i -> {
-            i.setAverageScore(Math.random()*40 + 60);
+            for (int j = 0; j < 50; j++) {
+                StuScore stuScore = new StuScore();
+                stuScore.setScore((double)((int)(Math.random()*50+50)));
+                String s = UUID.randomUUID().toString();
+                stuScore.setStuno(s.substring(0,13));
+                stuScore.setCheckLinkId(i.getId().intValue());
+                stuScore.setCreatedDate(LocalDateTime.now());
+                stuScore.setUpdateDate(LocalDateTime.now());
+                stuScore.setMixScore(stuScore.getScore()/100d);
+                stuScoreList.add(stuScore);
+            }
         });
-
-        checkLinkService.saveBatch(list);
-
+        stuScoreService.saveBatch(stuScoreList);
     }
+
 
 //    private String getString(){
 //        int count = (int)((Math.random()) * 30 + 12);

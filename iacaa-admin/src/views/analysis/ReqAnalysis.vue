@@ -19,6 +19,7 @@
       :close-on-click-modal="false"
       width="30%"
       @open="open"
+      z-index="999999"
       center
     >
       <span id="viewingReqBar" class="viewingReqBar"/>

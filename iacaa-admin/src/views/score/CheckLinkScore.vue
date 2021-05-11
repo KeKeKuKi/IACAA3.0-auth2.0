@@ -98,7 +98,17 @@
       center>
       <div>
         <el-form ref="ruleForm" :model="ckeckLinkEditForm" status-icon class="demo-ruleForm">
-          <span style="margin-left: 70%">
+<!--          <span style="margin-left: 1%;display: inline-block">-->
+<!--            <el-form :inline="true" :model="stuScoreSerchForm" class="demo-form-inline">-->
+<!--              <el-form-item label="">-->
+<!--                <el-input v-model="stuScoreSerchForm.stuNo" placeholder="学号" clearable/>-->
+<!--              </el-form-item>-->
+<!--              <el-form-item>-->
+<!--                <el-button type="primary" @click="getStuScore(stuScoreSerchForm.stuNo)">查询</el-button>-->
+<!--              </el-form-item>-->
+<!--            </el-form>-->
+<!--          </span>-->
+          <span style="margin-left: 40%">
             <el-button icon="el-icon-download" type="primary" @click="exportTemplate">下载导入模板</el-button>
             <el-button icon="el-icon-upload2" type="primary">Excel导入成绩</el-button>
           </span>
@@ -134,7 +144,8 @@
                 label="更新日期">
               </el-table-column>
             </el-table>
-            <div v-for="(item,index) in ckeckLinkEditForm.stuScores" type="text" autocomplete="off">
+            <div v-for="(item,index) in ckeckLinkEditForm.stuScores" type="text" autocomplete="off"
+                 style="height: 35px">
               <el-input type="text" autocomplete="off" v-model="item.stuno"
                         style="width: 25%;margin-top: 2px"></el-input>
               <el-input type="text" autocomplete="off" v-model="item.score"
@@ -235,6 +246,9 @@ export default {
         course: {},
         checkLink: {},
         stuScores: []
+      },
+      stuScoreSerchForm: {
+        stuNo: ''
       }
     }
   },
@@ -242,6 +256,9 @@ export default {
     this.getCourseList()
   },
   methods: {
+    getStuScore(stuNo){
+
+    },
     showScore(course) {
       this.viewingCourse = course
       requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
@@ -268,9 +285,9 @@ export default {
       }, res => {
         if (res.data.succ) {
           this.viewingStuScore = res.data.data
-          if(this.viewingStuScore.length > 0){
+          if (this.viewingStuScore.length > 0) {
             this.dialogVisible3 = true
-          }else {
+          } else {
             this.$message({
               message: '暂无成绩',
               type: 'warning'
@@ -290,12 +307,12 @@ export default {
         this.setChartData(this.viewCourseTasks)
       })
     },
-    open3(){
+    open3() {
       this.$nextTick(() => {
         this.setCheckLinkScoreBar()
       })
     },
-    setCheckLinkScoreBar(){
+    setCheckLinkScoreBar() {
       var chartDom = document.getElementById('elinkScatterPlot');
       var myChart = echarts.init(chartDom);
       var option;
@@ -371,12 +388,9 @@ export default {
               type: 'shadow'
             }
           },
-          legend: {
-            data: ['2012年']
-          },
           xAxis: {
             type: 'value',
-            boundaryGap: [0, 0.01]
+            show: false
           },
           yAxis: {
             type: 'category',
@@ -384,7 +398,7 @@ export default {
           },
           series: [
             {
-              name: '2011年',
+              name: '评价次数:',
               type: 'bar',
               data: counts,
               itemStyle: {
@@ -422,9 +436,6 @@ export default {
             axisPointer: {
               type: 'shadow'
             }
-          },
-          legend: {
-            data: ['2012年']
           },
           yAxis: {
             type: 'value',

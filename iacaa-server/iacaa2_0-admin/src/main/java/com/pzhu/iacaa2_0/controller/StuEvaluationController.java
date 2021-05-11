@@ -3,12 +3,10 @@ package com.pzhu.iacaa2_0.controller;
 
 import com.gapache.security.annotation.AuthResource;
 import com.pzhu.iacaa2_0.common.ActionResult;
+import com.pzhu.iacaa2_0.entity.Course;
 import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entity.StuEvaluation;
-import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
-import com.pzhu.iacaa2_0.entityVo.EvaluationsList;
-import com.pzhu.iacaa2_0.entityVo.StuEvaluationStatisticsVo;
-import com.pzhu.iacaa2_0.entityVo.StuEvaluationVo;
+import com.pzhu.iacaa2_0.entityVo.*;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.pzhu.iacaa2_0.service.IStuEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class StuEvaluationController {
     IStuEvaluationService stuEvaluationService;
 
     @RequestMapping("getQuestions")
-    public ActionResult getQuestions (){
+    public ActionResult getQuestions (@RequestBody CourseVo courseVo){
         CourseTask courseTask = new CourseTask();
         courseTask.setYear(LocalDateTime.now().getYear());
         int randomSize = 8;

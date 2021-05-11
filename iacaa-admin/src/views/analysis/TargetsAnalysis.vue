@@ -7,7 +7,6 @@
       <el-select v-model="serchForm.reqId" placeholder="关联毕业要求" clearable filterable style="width: 300px;padding: 3px">
         <el-option v-for="(item,index) in reqs" :key="index" :label="item.name" :value="item.id" />
       </el-select>
-      <el-input v-model="serchForm.id" placeholder="ID" style="display: inline-block;width: 100px;padding: 3px"></el-input>
       <el-input v-model="serchForm.word" placeholder="描述" style="display: inline-block;width: 300px;padding: 3px"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
 
@@ -23,6 +22,7 @@
       width="95%"
       top="50px"
       @open="open"
+      z-index="999999"
       center
     >
       <span id="targetPie" class="targetPie"/>

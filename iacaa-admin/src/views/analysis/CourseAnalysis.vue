@@ -10,7 +10,6 @@
       <el-select v-model="serchForm.targetId" placeholder="关联指标点" clearable filterable style="width: 300px;padding: 3px">
         <el-option v-for="(item,index) in this.allTarget" :key="index" :label="item.discribe" :value="item.id" />
       </el-select>
-      <el-input v-model="serchForm.id" placeholder="ID" style="display: inline-block;width: 100px;padding: 3px"></el-input>
       <el-input v-model="serchForm.word" placeholder="描述" style="display: inline-block;width: 300px;padding: 3px"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
       <span style="float: right;margin-right: 180px">
@@ -272,12 +271,10 @@ export default {
               type: 'shadow'
             }
           },
-          legend: {
-            data: ['2012年']
-          },
           xAxis: {
             type: 'value',
-            boundaryGap: [0, 0.01]
+            boundaryGap: [0, 0.01],
+            show: false
           },
           yAxis: {
             type: 'category',
@@ -285,7 +282,7 @@ export default {
           },
           series: [
             {
-              name: '2011年',
+              name: '评价次数:',
               type: 'bar',
               data: counts,
               itemStyle: {
