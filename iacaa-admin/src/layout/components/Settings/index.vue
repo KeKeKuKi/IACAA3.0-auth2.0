@@ -5,7 +5,7 @@
 
       <div class="drawer-item">
         <span>系统编辑年份</span>
-        <el-input-number v-model="year" :min="2000" :max="new Date().getFullYear()+20" @change="setYear" label="年份"></el-input-number>
+        <el-input-number v-model="year" :min="2000" :max="new Date().getFullYear()+20" label="年份" @change="saveYear"></el-input-number>
       </div>
 
       <div class="drawer-item">
@@ -34,6 +34,7 @@
 
 <script>
 import ThemePicker from '@/components/ThemePicker'
+import router from "@/router";
 
 export default {
   components: { ThemePicker },
@@ -84,8 +85,12 @@ export default {
         value: val
       })
     },
-    setYear(){
+    saveYear(){
       localStorage.setItem('editYear', this.year)
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'editYear',
+        value: localStorage.getItem('editYear')
+      })
     }
   }
 }

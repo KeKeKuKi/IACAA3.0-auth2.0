@@ -64,7 +64,7 @@ public class CourseTargetController {
     @AuthResource(scope = "thisYearvoList", name = "本年度课程-指标点Vo列表")
     public ActionResult thisYearvoList(@RequestBody CourseTargetVo vo){
         List<CourseTargetVo> volist = courseTargetService.volist(vo);
-        volist.removeIf(next -> next.getTarget().getYear() != LocalDateTime.now().getYear());
+        volist.removeIf(next -> !next.getTarget().getYear().equals(vo.getYear()));
         return ActionResult.ofSuccess(volist);
     }
 

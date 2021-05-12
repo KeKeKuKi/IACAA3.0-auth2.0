@@ -81,22 +81,22 @@ public class GradRequirementController{
         return ActionResult.ofSuccess(list);
     }
 
-    @RequestMapping("/pageList")
-    @AuthResource(scope = "pageList", name = "毕业要求列表分页")
-    public ActionResult pageList(@RequestBody GradRequirementVo vo) {
-        QueryWrapper<GradRequirement> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isEmpty(vo.getWord())) {
-            wrapper.like("name", vo.getWord()).or()
-                    .like("discrible", vo.getWord());
-        }
-        if (!StringUtils.isEmpty(vo.getYear())) {
-            wrapper.eq("year", vo.getYear());
-        }
-        wrapper.orderByDesc("year", "update_date");
-//        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
-        List<GradRequirement> list = gradRequirementService.list(wrapper);
-        return ActionResult.ofSuccess(list);
-    }
+//    @RequestMapping("/pageList")
+//    @AuthResource(scope = "pageList", name = "毕业要求列表分页")
+//    public ActionResult pageList(@RequestBody GradRequirementVo vo) {
+//        QueryWrapper<GradRequirement> wrapper = new QueryWrapper<>();
+//        if (!StringUtils.isEmpty(vo.getWord())) {
+//            wrapper.like("name", vo.getWord()).or()
+//                    .like("discrible", vo.getWord());
+//        }
+//        if (vo.getYear() != null) {
+//            wrapper.eq("year", vo.getYear());
+//        }
+////        wrapper.orderByDesc("i");
+////        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
+//        List<GradRequirement> list = gradRequirementService.list(wrapper);
+//        return ActionResult.ofSuccess(list);
+//    }
 
 
     @RequestMapping("/voList")
@@ -202,7 +202,7 @@ public class GradRequirementController{
 
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
-        for (int year = 2019; year < 2022; year++) {
+        for (int year = 2018; year < 2022; year++) {
             GradRequirementVo vo = new GradRequirementVo();
             vo.setYear(year);
             List<GradRequirement> list = gradRequirementService.list(vo);

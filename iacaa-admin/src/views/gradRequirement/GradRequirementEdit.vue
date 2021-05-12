@@ -147,7 +147,6 @@ export default {
       currentPage: 1,
       serchForm: {
         word: '',
-        year: localStorage.getItem('editYear')
       },
       editForm: {
         id: '',
@@ -157,14 +156,16 @@ export default {
       },
       addForm: {
         discrible: '',
-        name: '',
-        year: localStorage.getItem('editYear')
+        name: ''
       },
       ids: []
     }
   },
   mounted() {
     this.getList()
+  },
+  watch: {
+    '$store.state.settings.editYear': 'getList'
   },
   methods: {
     handleSelectionChange(val) {
@@ -174,12 +175,14 @@ export default {
     onSubmit() {
     },
     getList() {
+      this.dialogVisible = false
+      this.dialogVisible1 = false
       this.loading = true
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/pageList', {
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         word: this.serchForm.word,
-        year: this.serchForm.year
+        year: this.$store.state.settings.editYear
       },res => {
         if (res.data.succ) {
           this.tableData = res.data.data
@@ -218,7 +221,11 @@ export default {
     submitAddForm() {
       this.dialogVisible1 = false
       this.loading = true
-      requestByClient(supplierConsumer, 'POST','gradRequirement/save', this.addForm,res => {
+      requestByClient(supplierConsumer, 'POST','gradRequirement/save', {
+        discrible: this.addForm.discrible,
+        name: this.addForm.name,
+        year: this.$store.state.settings.editYear
+      },res => {
         if (res.data.succ) {
           this.$message({
             message: '添加成功',
@@ -235,8 +242,7 @@ export default {
       this.editForm.discrible = record.discrible
       this.editForm.name = record.name
       requestByClient(supplierConsumer, 'POST','target/list', {
-        reqId: record.id,
-        year: record.year
+        reqId: record.id
         }
       , res => {
         if (res.data.succ) {

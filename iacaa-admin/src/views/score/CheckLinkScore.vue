@@ -252,6 +252,9 @@ export default {
       }
     }
   },
+  watch: {
+    '$store.state.settings.editYear': 'getCourseList'
+  },
   mounted() {
     this.getCourseList()
   },
@@ -262,7 +265,8 @@ export default {
     showScore(course) {
       this.viewingCourse = course
       requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
-        courseId: course.id
+        courseId: course.id,
+        year: this.$store.state.settings.editYear
       }, res => {
         if (res.data.succ) {
           this.viewCourseTasks = res.data.data
@@ -717,6 +721,10 @@ export default {
       }
     },
     getCourseList() {
+      this.dialogVisible = false
+      this.dialogVisible1 = false
+      this.dialogVisible2 = false
+      this.dialogVisible3 = false
       requestByClient(supplierConsumer, 'POST', 'course/voList', {
         pageNum: this.currentPage,
         pageSize: this.pageSize,

@@ -116,6 +116,9 @@ export default {
       }
     }
   },
+  watch: {
+    '$store.state.settings.editYear': 'getList'
+  },
   methods: {
     submitCheckLinks(){
       requestByClient(supplierConsumer, 'POST', 'checkLink/saveOrUpdate', this.editingForm.checkLinks, res => {
@@ -173,8 +176,9 @@ export default {
       })
     },
     getList() {
+      this.dialogVisible = false
       this.loading = true
-      requestByClient(supplierConsumer, 'POST', 'course/voList', {
+      requestByClient(supplierConsumer, 'POST', 'course/authList', {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         word: this.serchForm.word

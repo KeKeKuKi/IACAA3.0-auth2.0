@@ -11,4 +11,5 @@ public class CourseTargetVo extends CourseTarget{
     Course course;
     Target target;
     Double mix;
+    Integer year;
 }

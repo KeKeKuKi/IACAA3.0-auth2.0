@@ -34,6 +34,6 @@ module.exports = {
    */
   errorLog: 'production',
 
-  editYear: new Date().getFullYear()
+  editYear: localStorage.getItem('editYear') ? localStorage.getItem('editYear') : new Date().getFullYear()
 }
 

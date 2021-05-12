@@ -52,6 +52,16 @@ public class CourseController{
         return ActionResult.ofSuccess(page);
     }
 
+    @RequestMapping("/authList")
+    @AuthResource(scope = "authList", name = "权限课程列表")
+    public ActionResult authList(@RequestBody CourseVo vo){
+        Long userId = AccessCardHolder.getContext().getUserId();
+        vo.setEditUserId(userId.intValue());
+        List<Course> list = courseService.list(vo);
+        PageInfo page = new PageInfo(list);
+        return ActionResult.ofSuccess(page);
+    }
+
     @RequestMapping("/adminList")
     @AuthResource(scope = "adminList", name = "admin课程列表")
     public ActionResult adminList(@RequestBody CourseVo vo) throws Exception{

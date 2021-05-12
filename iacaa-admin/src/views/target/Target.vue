@@ -72,7 +72,7 @@
           <el-form-item label="指标点" prop="pass">
             <el-input v-model="targetEditForm.target" disabled type="text" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="支撑课程：" prop="pass">
+          <el-form-item label="支撑课程:" prop="pass">
             <el-button type="primary" round style="" @click="handleAddTarget">添加</el-button>
             <br>
             <!--eslint-disable-next-line-->
@@ -142,6 +142,9 @@ export default {
 
     }
   },
+  watch: {
+    '$store.state.settings.editYear': 'getReqList'
+  },
   mounted() {
     this.getReqList()
     this.getCourseList()
@@ -152,6 +155,8 @@ export default {
       this.ids = result
     },
     getCourseList() {
+      this.dialogVisible = false
+      this.dialogVisible1 = false
       requestByClient(supplierConsumer, 'POST', 'course/list', {
       }, res => {
         if (res.data.succ) {
@@ -164,7 +169,7 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         word: this.serchForm.word,
-        year: this.serchForm.year
+        year: this.$store.state.settings.editYear
       }, res => {
         if (res.data.succ) {
           this.tableData = res.data.data

@@ -127,6 +127,9 @@ export default {
       }
     }
   },
+  watch: {
+    '$store.state.settings.editYear': 'getList'
+  },
   methods: {
     changeEditStatus(id){
       console.log(id)
@@ -147,8 +150,9 @@ export default {
       })
     },
     getList() {
+      this.dialogVisible = false
       this.loading = true
-      requestByClient(supplierConsumer, 'POST','course/voList',{
+      requestByClient(supplierConsumer, 'POST','course/authList',{
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         word: this.serchForm.word
@@ -195,14 +199,15 @@ export default {
       this.editForm.name = row.name
       requestByClient(supplierConsumer, 'POST','courseTask/voList',{
         courseId: row.id,
-        year: new Date().getFullYear()
+        year: this.$store.state.settings.editYear
       },res => {
         if (res.data.succ) {
             this.editForm.courseTasks = res.data.data
         }
       })
       requestByClient(supplierConsumer, 'POST','courseTarget/thisYearvoList',{
-        courseId: row.id
+        courseId: row.id,
+        year: this.$store.state.settings.editYear
       },res => {
         if (res.data.succ) {
           if(res.data.data.length === 0){
@@ -220,7 +225,7 @@ export default {
 
     },
     handleAddCourseTask() {
-      this.editForm.courseTasks.push({describes:'',course:{id: this.editForm.id},target:{id:'' },mix: ''})
+      this.editForm.courseTasks.push({describes:'',year: this.$store.state.settings.editYear,course:{id: this.editForm.id},target:{id:'' },mix: ''})
     },
     deleteDiscribe(index){
       var courseTask = this.editForm.courseTasks[index]

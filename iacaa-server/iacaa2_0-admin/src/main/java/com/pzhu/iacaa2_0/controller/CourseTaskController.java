@@ -74,7 +74,7 @@ public class CourseTaskController {
     @RequestMapping("/randomlist")
     public ActionResult randomlist(){
         CourseTask courseTask = new CourseTask();
-        courseTask.setYear(LocalDateTime.now().getYear());
+//        courseTask.setYear(LocalDateTime.now().getYear());
         int randomSize = 4;
         List<CourseTaskVo> courseTasks = courseTaskService.randomlist(courseTask,randomSize);
         return ActionResult.ofSuccess(courseTasks);
@@ -108,7 +108,7 @@ public class CourseTaskController {
             courseTask.setMix(i.getMix());
             courseTask.setTargetId(i.getTarget().getId().intValue());
             courseTask.setDescribes(i.getDescribes());
-            courseTask.setYear(LocalDateTime.now().getYear());
+            courseTask.setYear(i.getYear());
             tasks.add(courseTask);
         });
         Set<Map.Entry<String, Double>> entries = checkMap.entrySet();

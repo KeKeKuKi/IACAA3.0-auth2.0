@@ -6,6 +6,8 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+        <span class="right-menu-item hover-effect" style="font-size: 25px;color: rebeccapurple">{{$store.state.settings.editYear}}</span>
+
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -71,7 +73,8 @@ export default {
       dialogFormVisible: false,
       password: '',
       showClose: false,
-      newPassword: ''
+      newPassword: '',
+      year: localStorage.getItem('editYear')
     }
   },
   computed: {
