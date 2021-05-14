@@ -1,9 +1,6 @@
 <template>
   <div>
     <div class="historyLabel">
-      <el-select v-model="serchForm.year" placeholder="选择时间" filterable clearable @change="getList">
-        <el-option v-for="year in lastFiveYear" :label="year" :value="year"/>
-      </el-select>
       <el-select v-model="serchForm.courseId" placeholder="关联课程" clearable filterable style="width: 200px;padding: 3px">
         <el-option v-for="(item,index) in this.allCourse" :key="index" :label="item.name" :value="item.id" />
       </el-select>
@@ -49,23 +46,24 @@ export default {
       allCourse: [],
       allTarget: [],
       serchForm: {
-        year: new Date().getFullYear(),
         courseId: '',
         targetId: '',
         id: '',
         word: ''
-      }
+      },
+      viewingCourseTaskList: []
     }
   },
   mounted() {
-    let thisYear = new Date().getFullYear()
-    for (let i = 0; i < 5; i++) {
-      this.lastFiveYear.push(thisYear)
-      thisYear = thisYear -1
-    }
     this.getList()
     this.getAllTarget()
     this.getAllCourse()
+  },
+  watch: {
+    '$store.state.settings.editYear'(val, oldVal){
+      this.getList()
+      this.getAllTarget()
+    }
   },
   methods: {
     getAllCourse(){
@@ -77,7 +75,7 @@ export default {
     },
     getAllTarget(){
       requestByClient(supplierConsumer, 'POST', 'target/list', {
-        year: this.serchForm.year
+        year: this.$store.state.settings.editYear
       }, res => {
         if (res.data.succ) {
           this.allTarget = res.data.data
@@ -92,7 +90,7 @@ export default {
         body: true
       })
       requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {
-        year: 2021
+        year: this.$store.state.settings.editYear
       }, res => {
         if (res.data.succ) {
           this.$message({
@@ -109,16 +107,24 @@ export default {
       })
     },
     getList() {
-      requestByClient(supplierConsumer, 'POST', 'courseTask/voList', this.serchForm, res => {
+      this.dialogVisible = false
+      requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
+        year: this.$store.state.settings.editYear,
+        courseId: this.serchForm.courseId,
+        targetId: this.serchForm.targetId,
+        id: this.serchForm.id,
+        word: this.serchForm.word
+      }, res => {
         if (res.data.succ) {
-          let data = res.data.data
-
-          this.setChartData(data)
+          this.viewingCourseTaskList = res.data.data
+          this.setChartData()
         }
         this.loading = false
       })
     },
-    setChartData(data) {
+    setChartData() {
+      let vue = this
+      let data = this.viewingCourseTaskList
       let courseTasksName = data.map(i => {
         return (i.course.name + ':' + i.describes)
       })
@@ -128,7 +134,6 @@ export default {
       let stuScores = data.map(i => {
         return i.stuGrade ? (i.stuGrade).toFixed(2) * 100 : 0
       })
-      let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
@@ -182,7 +187,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#ff1272'
+              color: '#ba0028'
             }
           },
           showBackground: true,
@@ -205,7 +210,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#0e4fff'
+              color: '#00216c'
             }
           },
           showBackground: true,
@@ -228,7 +233,7 @@ export default {
       option && myChart.setOption(option)
       //点击事件
       myChart.on('click', function (params) {
-        vue.selectOneCourseTask(data[params.dataIndex].id)
+        vue.selectOneCourseTask(vue.viewingCourseTaskList[params.dataIndex].id)
       });
     },
     selectOneCourseTask(id) {

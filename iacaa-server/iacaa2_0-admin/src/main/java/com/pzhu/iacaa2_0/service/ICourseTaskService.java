@@ -25,4 +25,5 @@ public interface ICourseTaskService extends IService<CourseTask> {
 
     List<CourseTaskVo> randomlist(CourseTask courseTask, int randomSize);
 
+    Boolean summaryCourseTaskById(CourseTask courseTask);
 }

@@ -6,7 +6,9 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <span class="right-menu-item hover-effect" style="font-size: 25px;color: rebeccapurple">{{$store.state.settings.editYear}}</span>
+        <span class="right-menu-item hover-effect" style="font-size: 25px;color: rebeccapurple;
+        margin-right: 25px;font-family: 宋体;text-align: center;
+        color: #363636;">{{$store.state.settings.editYear}}年</span>
 
         <search id="header-search" class="right-menu-item" />
 

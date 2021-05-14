@@ -59,4 +59,18 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
         return baseMapper.randomlist(courseTask,randomSize);
     }
 
+    @Override
+    public Boolean summaryCourseTaskById(CourseTask courseTask) {
+        QueryWrapper<CourseTask> courseTaskQueryWrapper = new QueryWrapper<>();
+        courseTaskQueryWrapper.eq("year",courseTask.getYear());
+        courseTaskQueryWrapper.eq("course_id",courseTask.getCourseId());
+        List<CourseTask> courseTasks = baseMapper.selectList(courseTaskQueryWrapper);
+        courseTasks.forEach(i -> {
+            checkLinkService.summaryByCourseTaskID(i.getId(),courseTask.getYear());
+            baseMapper.summaryStuScore(i.getId());
+        });
+        baseMapper.coverNullToZero();
+        return true;
+    }
+
 }

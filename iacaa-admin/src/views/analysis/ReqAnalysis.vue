@@ -1,9 +1,6 @@
 <template>
   <div>
     <div class="historyLabel">
-      <el-select v-model="serchForm.year" placeholder="选择年份" filterable clearable @change="getList()">
-        <el-option v-for="year in lastFiveYears" :label="year" :value="year"/>
-      </el-select>
       <el-input v-model="serchForm.word" placeholder="标题/描述" style="display: inline-block;width: 300px;padding: 10px"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
 
@@ -44,15 +41,14 @@ export default {
       },
       dialogVisible: false,
       viewingReq: {},
-      lastFiveYears: []
+      lastFiveYears: [],
+      viewingList: []
     }
   },
+  watch: {
+    '$store.state.settings.editYear': 'getList'
+  },
   mounted() {
-    let thisYear = new Date().getFullYear()
-    for (let i = 0; i < 5; i++) {
-      this.lastFiveYears.push(thisYear)
-      thisYear = thisYear -1
-    }
     this.getList()
   },
   methods: {
@@ -131,7 +127,7 @@ export default {
           barGap: 0,
           itemStyle: {
             normal: {
-              color: '#0066ff'
+              color: '#00216c'
             }
           },
           showBackground: true,
@@ -144,7 +140,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#ff0033'
+              color: '#ba0028'
             }
           },
           showBackground: true,
@@ -163,7 +159,7 @@ export default {
         body: true
       })
       requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {
-        year: 2021
+        year: this.$store.state.settings.editYear
       }, res => {
         if (res.data.succ) {
           this.$message({
@@ -180,18 +176,21 @@ export default {
       })
     },
     getList() {
+      this.dialogVisible = false
       requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
-        year: this.serchForm.year,
+        year: this.$store.state.settings.editYear,
         word: this.serchForm.word
       }, res => {
         if (res.data.succ) {
-          let data = res.data.data
-          this.setChartData(data)
+          this.viewingList = res.data.data
+          this.setChartData()
         }
         this.loading = false
       })
     },
-    setChartData(data) {
+    setChartData() {
+      let vue = this
+      let data = this.viewingList
       let reqs = data.map(i => {
         return i.name
       })
@@ -201,7 +200,6 @@ export default {
       let stuScores = data.map(i => {
         return (i.stuGrade * 100).toFixed(2)
       })
-      let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
@@ -255,7 +253,7 @@ export default {
           barGap: 0,
           itemStyle: {
             normal: {
-              color: '#ff2469'
+              color: '#bb002b'
             }
           },
           showBackground: true,
@@ -278,7 +276,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#1847ff'
+              color: '#00238d'
             }
           },
           showBackground: true,
@@ -301,7 +299,7 @@ export default {
       option && myChart.setOption(option)
       //点击事件
       myChart.on('click', function (params) {
-        vue.selectOneReq(data[params.dataIndex].id)
+        vue.selectOneReq(vue.viewingList[params.dataIndex].id)
       });
     },
     selectOneReq(id) {

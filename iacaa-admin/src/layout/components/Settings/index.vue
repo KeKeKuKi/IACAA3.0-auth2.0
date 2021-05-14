@@ -4,7 +4,7 @@
       <h3 class="drawer-title">系统设置</h3>
 
       <div class="drawer-item">
-        <span>系统编辑年份</span>
+        <span>系统编辑年份(刷新页面返回今年)</span>
         <el-input-number v-model="year" :min="2000" :max="new Date().getFullYear()+20" label="年份" @change="saveYear"></el-input-number>
       </div>
 
@@ -40,7 +40,7 @@ export default {
   components: { ThemePicker },
   data() {
     return {
-      year: localStorage.getItem('editYear') ? localStorage.getItem('editYear') : new Date().getFullYear()
+      year: this.$store.state.settings.editYear
     }
   },
   computed: {

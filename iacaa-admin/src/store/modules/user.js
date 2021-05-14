@@ -45,7 +45,7 @@ export const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      requestByClient(authCenterServer, 'post', '/auth/login', { username: username, password: password }, resp => {
+      requestByClient(authCenterServer, 'post', '/auth/login', { username: username, password: password, clientId: 'IACAA3' }, resp => {
         const respJson = resp.data
         const { code, data } = respJson
         if (code === 0) {

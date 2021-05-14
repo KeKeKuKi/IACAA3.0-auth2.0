@@ -40,7 +40,7 @@ public class StuEvaluationController {
     @RequestMapping("getQuestions")
     public ActionResult getQuestions (@RequestBody CourseVo courseVo){
         CourseTask courseTask = new CourseTask();
-        courseTask.setYear(LocalDateTime.now().getYear());
+//        courseTask.setYear(LocalDateTime.now().getYear());
         int randomSize = 8;
         List<CourseTaskVo> courseTasks = courseTaskService.randomlist(courseTask,randomSize);
         List<StuEvaluationVo> stuEvaluationVos = new ArrayList<>();

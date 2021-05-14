@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         Page<UserEntity> page;
         if (accessCard.getCustomerInfo().containsKey(AuthConstants.POSITION_ID)
                 || accessCard.getCustomerInfo().containsKey(AuthConstants.SUPERIOR_ID)) {
-            if (StringUtils.isNotBlank(params.getUsername())) {
+            if (params != null && StringUtils.isNotBlank(params.getUsername())) {
                 page = userRepository.findAllByOwnerIdAndUsernameLike(FindUtils.allMatch(params.getUsername()), accessCard.getUserId(), pageable);
             } else {
                 page = userRepository.findAllByOwnerId(accessCard.getUserId(), pageable);

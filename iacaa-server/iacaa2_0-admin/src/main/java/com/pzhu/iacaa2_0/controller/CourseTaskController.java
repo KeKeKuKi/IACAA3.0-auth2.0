@@ -74,7 +74,6 @@ public class CourseTaskController {
     @RequestMapping("/randomlist")
     public ActionResult randomlist(){
         CourseTask courseTask = new CourseTask();
-//        courseTask.setYear(LocalDateTime.now().getYear());
         int randomSize = 4;
         List<CourseTaskVo> courseTasks = courseTaskService.randomlist(courseTask,randomSize);
         return ActionResult.ofSuccess(courseTasks);
@@ -130,5 +129,11 @@ public class CourseTaskController {
     @AuthResource(scope = "summaryCourseTask", name = "同步课程目标成绩数据")
     public ActionResult summaryCourseTask(@RequestBody CourseTask courseTask){
         return ActionResult.ofSuccess(courseTaskService.summaryCourseTask(courseTask.getYear()));
+    }
+
+    @RequestMapping("/summaryCourseTaskByCourseId")
+    @AuthResource(scope = "summaryCourseTaskByCourseId", name = "同步课程目标成绩数据ById")
+    public ActionResult summaryCourseTaskByCourseId(@RequestBody CourseTask courseTask){
+        return ActionResult.ofSuccess(courseTaskService.summaryCourseTaskById(courseTask));
     }
 }

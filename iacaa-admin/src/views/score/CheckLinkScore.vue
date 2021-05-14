@@ -45,48 +45,27 @@
       <el-table-column
         prop=""
         label="操作"
-        width="200">
+        width="">
         <template slot-scope="courseScope">
-          <el-button type="primary" @click="showScore(courseScope.row)">成绩分析</el-button>
+          <el-button type="primary" @click="showScore(courseScope.row)">年度课程成绩分析</el-button>
+          <el-button type="primary" @click="editScore(courseScope.row)">年度成绩管理</el-button>
+          <span style="margin-left: 1%;display: inline-block">
+            <el-button icon="el-icon-download" type="primary" @click="importFilePrefix(courseScope.row)">成绩导入模板</el-button>
+            <el-upload
+              class="upload-demo"
+              action=""
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              :limit="1"
+              :on-exceed="handleExceed"
+              :file-list="fileList"
+              :http-request="importFile"
+              style="display: inline-block;margin-left: 10px">
+              <el-button icon="el-icon-upload2" size="small" type="primary">Excel导入成绩</el-button>
+            </el-upload>
+          </span>
           <!--          <el-button icon="el-icon-download" type="primary" @click="exportTemplate(courseScope.row.id, 2021)">下载导入模板</el-button>-->
-        </template>
-      </el-table-column>
-      <el-table-column prop="courseTasks" type="expand" label="考核环节" width="800">
-        <template slot-scope="courseScope">
-          <el-table :data="courseScope.row.checkLinks" stripe>
-            <el-table-column
-              prop="year"
-              label="年份"
-              width="200"
-            />
-            <el-table-column
-              prop="name"
-              label="考核环节"
-              width="400"
-            />
-            <el-table-column
-              prop="createdDate"
-              label="创建时间"
-              width="200"
-            />
-            <el-table-column
-              prop="updateDate"
-              label="最终更新时间"
-              width="200"
-            />
-            <el-table-column label="操作" prop="courseTasks">
-              <template slot-scope="checkLinkScope">
-                <el-button type="primary" @click="handleCheckLinkShowScore(courseScope.row, checkLinkScope.row)">散点图
-                </el-button>
-
-                <el-button :disabled="courseScope.row.editStatus === 0"
-                           v-if="checkLinkScope.row.year === new Date().getFullYear()"
-                           type="warning" @click="handleCheckLinkEditForm(courseScope.row, checkLinkScope.row)">编辑成绩
-                </el-button>
-
-              </template>
-            </el-table-column>
-          </el-table>
         </template>
       </el-table-column>
     </el-table>
@@ -98,20 +77,6 @@
       center>
       <div>
         <el-form ref="ruleForm" :model="ckeckLinkEditForm" status-icon class="demo-ruleForm">
-<!--          <span style="margin-left: 1%;display: inline-block">-->
-<!--            <el-form :inline="true" :model="stuScoreSerchForm" class="demo-form-inline">-->
-<!--              <el-form-item label="">-->
-<!--                <el-input v-model="stuScoreSerchForm.stuNo" placeholder="学号" clearable/>-->
-<!--              </el-form-item>-->
-<!--              <el-form-item>-->
-<!--                <el-button type="primary" @click="getStuScore(stuScoreSerchForm.stuNo)">查询</el-button>-->
-<!--              </el-form-item>-->
-<!--            </el-form>-->
-<!--          </span>-->
-          <span style="margin-left: 40%">
-            <el-button icon="el-icon-download" type="primary" @click="exportTemplate">下载导入模板</el-button>
-            <el-button icon="el-icon-upload2" type="primary">Excel导入成绩</el-button>
-          </span>
           <el-form-item prop="pass" style="padding: 0;margin: 0">
             <br>
             <el-table
@@ -199,6 +164,54 @@
       </div>
     </el-dialog>
 
+    <el-dialog
+      :visible.sync="dialogVisible4"
+      :close-on-click-modal="false"
+      :title="'课程成绩'"
+      width="65%"
+      z-index="3"
+      center>
+
+      <el-table
+        ref="multipleTable"
+        :data="checkLinksList"
+        style="width: 100%"
+        tooltip-effect="dark"
+      >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="名称"
+          width="200">
+        </el-table-column>
+        <el-table-column
+          prop="averageScore"
+          label="平均成绩"
+          width="300">
+        </el-table-column>
+        <el-table-column
+          prop="targetScore"
+          label="目标成绩"
+          width="300">
+        </el-table-column>
+        <el-table-column
+          prop=""
+          label="操作"
+          width="">
+          <template slot-scope="checkLinkScope">
+            <el-button type="primary" @click="handleCheckLinkShowScore(checkLinkScope.row)">散点图
+            </el-button>
+            <el-button type="warning" @click="handleCheckLinkEditForm(checkLinkScope.row)">编辑成绩
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-pagination
       :current-page="currentPage"
       :page-sizes="[10, 15, 20, 50, 100]"
@@ -218,6 +231,7 @@ import {requestByClient, supplierConsumer} from "@/utils/HttpUtils";
 import axios from "axios";
 import {getToken} from "@/utils/auth";
 import echarts from "echarts";
+import {Loading} from "element-ui";
 
 export default {
   name: "CheckLinkScore",
@@ -227,6 +241,7 @@ export default {
       dialogVisible1: false,
       dialogVisible2: false,
       dialogVisible3: false,
+      dialogVisible4: false,
       pageSize: 20,
       total: 0,
       currentPage: 1,
@@ -238,6 +253,7 @@ export default {
       viewingStuScore: [],
       tableData: [],
       courses: [],
+      checkLinksList: [],
       serchForm: {
         word: '',
         year: ''
@@ -249,7 +265,8 @@ export default {
       },
       stuScoreSerchForm: {
         stuNo: ''
-      }
+      },
+      fileList: []
     }
   },
   watch: {
@@ -259,11 +276,60 @@ export default {
     this.getCourseList()
   },
   methods: {
-    getStuScore(stuNo){
+    importFilePrefix(course){
+      this.viewingCourse = course
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
+    },
+    editScore(course) {
+      this.viewingCourse = course
+      requestByClient(supplierConsumer, 'POST', 'checkLink/list', {
+        courseId: course.id,
+        year: this.$store.state.settings.editYear
+      }, res => {
+        if (res.data.succ) {
+          this.checkLinksList = res.data.data
+          if (this.checkLinksList.length > 0) {
+            this.dialogVisible4 = true
+          } else {
+            this.$message({
+              message: '该课课程' + this.$store.state.settings.editYear + '未录入考核环节',
+              type: 'warning'
+            });
+          }
+        }
+      })
+    },
+    getStuScore(stuNo) {
 
     },
     showScore(course) {
       this.viewingCourse = course
+      const loadingInstance = Loading.service({
+        background: 'rgba(0, 0, 0, 0.7)',
+        text: '加载中，请稍后。。。',
+        target: 'document.body',
+        body: true
+      })
+      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTaskByCourseId', {
+        year: this.$store.state.settings.editYear,
+        courseId: course.id
+      }, res => {
+        // 关闭加载动画
+        this.$nextTick(() => {
+          loadingInstance.close()
+        })
+      })
       requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
         courseId: course.id,
         year: this.$store.state.settings.editYear
@@ -282,7 +348,7 @@ export default {
         this.loading = false
       })
     },
-    handleCheckLinkShowScore(course, checkLink) {
+    handleCheckLinkShowScore(checkLink) {
       this.viewingCheckLink = checkLink
       requestByClient(supplierConsumer, 'POST', 'stuScore/list', {
         checkLinkId: this.viewingCheckLink.id
@@ -308,7 +374,7 @@ export default {
     },
     open2() {
       this.$nextTick(() => {
-        this.setChartData(this.viewCourseTasks)
+        this.setChartData()
       })
     },
     open3() {
@@ -328,7 +394,6 @@ export default {
         step.push(stuScores[i].score)
         data.push(step)
       }
-      console.log(data)
       option = {
         grid: {
           top: 40,
@@ -352,7 +417,9 @@ export default {
           }
         },
         xAxis: {},
-        yAxis: {},
+        yAxis: {
+          max: this.viewingCheckLink.targetScore
+        },
         series: [{
           symbolSize: 15,
           data: data,
@@ -509,7 +576,9 @@ export default {
         option2 && myChart2.setOption(option2);
       })
     },
-    setChartData(data) {
+    setChartData() {
+      let data = this.viewCourseTasks
+      let vue = this
       let courseTasksName = data.map(i => {
         return (i.course.name + ':' + i.describes)
       })
@@ -519,7 +588,6 @@ export default {
       let stuScores = data.map(i => {
         return i.stuGrade ? (i.stuGrade).toFixed(2) * 100 : 0
       })
-      let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
@@ -617,10 +685,9 @@ export default {
         ]
       }
       option && myChart.setOption(option)
-
       //点击事件
       myChart.on('click', function (params) {
-        vue.selectOneCourseTask(data[params.dataIndex].id)
+        vue.selectOneCourseTask(vue.viewCourseTasks[params.dataIndex].id)
       });
     },
     selectOneCourseTask(id) {
@@ -631,11 +698,11 @@ export default {
         this.dialogVisible1 = true
       })
     },
-    exportTemplate(courseId, year) {
+    exportTemplate(course) {
       let baseURL = supplierConsumer.defaults.baseURL
       axios.post(baseURL + '/stuScore/exportTemplate', {
-        courseId: courseId,
-        year: year
+        year: this.$store.state.settings.editYear,
+        courseId: course.id
       }, {
         responseType: 'blob',
         headers: {
@@ -648,7 +715,7 @@ export default {
         const objectUrl = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = objectUrl
-        a.download = '导入模板.xlsx'
+        a.download = course.name + this.$store.state.settings.editYear + '年成绩导入模板.xlsx'
         // a.click();
         // 下面这个写法兼容火狐
         a.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}))
@@ -725,6 +792,7 @@ export default {
       this.dialogVisible1 = false
       this.dialogVisible2 = false
       this.dialogVisible3 = false
+      this.dialogVisible4 = false
       requestByClient(supplierConsumer, 'POST', 'course/voList', {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -738,11 +806,13 @@ export default {
         }
       })
     },
-    handleCheckLinkEditForm(course, checkLink) {
+    handleCheckLinkEditForm(checkLink) {
       this.dialogVisible = true
       this.ckeckLinkEditForm.checkLink = checkLink
-      this.ckeckLinkEditForm.course = course
-      requestByClient(supplierConsumer, 'POST', 'stuScore/list', {checkLinkId: checkLink.id}, res => {
+      this.ckeckLinkEditForm.course = this.viewingCourse
+      requestByClient(supplierConsumer, 'POST', 'stuScore/list', {
+        checkLinkId: checkLink.id
+      }, res => {
         if (res.data.succ) {
           this.ckeckLinkEditForm.stuScores = res.data.data
         }
@@ -783,6 +853,25 @@ export default {
         mix: '',
         targetScore: '',
         taskId: this.ckeckLinkEditForm.courseTask.id
+      })
+    },
+    importFile(params) {
+      const _file = params.file
+      let formData = new FormData()
+      // 添加参数
+      formData.append('file', _file, _file.name)
+      formData.append('course.id',this.viewingCourse.id)
+      this.loading = true
+      requestByClient(supplierConsumer, 'POST', 'stuScore/importScore', formData, res => {
+        if (res.data.succ) {
+          this.$message({
+            message: '上传成功',
+            type: 'success'
+          });
+        } else {
+          this.$message.error(res.data.msg);
+        }
+        this.loading = false
       })
     },
     submitCheckLinksForm() {
