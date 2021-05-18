@@ -164,8 +164,11 @@ public class StuScoreController {
         }
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(filePath, new NoModelDataListener(checkLinkService, stuScoreService, fileUploadVo.getCourse().getId(), fileUploadVo.getYear())).sheet().doRead();
-//        EasyExcel.read(EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();, BaseData.class, new ScoresDataListener(stuScoreService)).sheet().doRead();
+        EasyExcel.read(filePath, new NoModelDataListener(
+                checkLinkService,
+                stuScoreService,
+                fileUploadVo.getCourse().getId(),
+                fileUploadVo.getYear())).sheet().doRead();
         return ActionResult.ofSuccess();
     }
 }

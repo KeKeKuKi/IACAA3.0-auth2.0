@@ -129,10 +129,10 @@ export default {
         return (i.course.name + ':' + i.describes)
       })
       let sysScores = data.map(i => {
-        return i.sysGrade ? (i.sysGrade).toFixed(2) * 100 : 0
+        return i.sysGrade ? ((i.sysGrade) * 100).toFixed(2) : 0
       })
       let stuScores = data.map(i => {
-        return i.stuGrade ? (i.stuGrade).toFixed(2) * 100 : 0
+        return i.stuGrade ? ((i.stuGrade) * 100).toFixed(2) : 0
       })
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)

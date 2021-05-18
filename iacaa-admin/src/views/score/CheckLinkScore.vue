@@ -50,7 +50,7 @@
           <el-button type="primary" @click="showScore(courseScope.row)">年度课程成绩分析</el-button>
           <el-button type="primary" @click="editScore(courseScope.row)">年度成绩管理</el-button>
           <span style="margin-left: 1%;display: inline-block">
-            <el-button icon="el-icon-download" type="primary" @click="importFilePrefix(courseScope.row)">成绩导入模板</el-button>
+            <el-button icon="el-icon-download" type="primary" @click="exportTemplate(courseScope.row)">成绩导入模板</el-button>
             <el-upload
               class="upload-demo"
               action=""
@@ -58,11 +58,12 @@
               :on-remove="handleRemove"
               :before-remove="beforeRemove"
               :limit="1"
+              show-file-list="false"
               :on-exceed="handleExceed"
               :file-list="fileList"
               :http-request="importFile"
               style="display: inline-block;margin-left: 10px">
-              <el-button icon="el-icon-upload2" size="small" type="primary">Excel导入成绩</el-button>
+              <el-button icon="el-icon-upload2" size="small" type="primary" @click="importFilePrefix(courseScope.row)">Excel导入成绩</el-button>
             </el-upload>
           </span>
           <!--          <el-button icon="el-icon-download" type="primary" @click="exportTemplate(courseScope.row.id, 2021)">下载导入模板</el-button>-->
@@ -861,6 +862,7 @@ export default {
       // 添加参数
       formData.append('file', _file, _file.name)
       formData.append('course.id',this.viewingCourse.id)
+      formData.append('year',this.$store.state.settings.editYear)
       this.loading = true
       requestByClient(supplierConsumer, 'POST', 'stuScore/importScore', formData, res => {
         if (res.data.succ) {

@@ -11,6 +11,7 @@ import com.pzhu.iacaa2_0.service.IStuScoreService;
 import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -68,7 +69,8 @@ public class NoModelDataListener extends AnalysisEventListener<Map<Integer, Stri
     /**
      * 加上存储数据库
      */
-    private void saveData() {
+    @Transactional
+    public void saveData() {
         Map<Integer, String> headMap = list1.get(0).get(0);
         Set<Map.Entry<Integer, String>> entries = headMap.entrySet();
         CheckLinkVo checkLink = new CheckLinkVo();
@@ -88,6 +90,10 @@ public class NoModelDataListener extends AnalysisEventListener<Map<Integer, Stri
                 stuScore.setUpdateDate(LocalDateTime.now());
                 stuScoreService.save(stuScore);
             }
+        });
+
+        checkLinks.forEach(i -> {
+            stuScoreService.summaryCheckLinkScoreById(i.getId());
         });
     }
 }
